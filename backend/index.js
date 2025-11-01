@@ -19,7 +19,26 @@ const reminders = require('./jobs/reminders');
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Permitir requests sin origin (same-origin, curl, health checks)
+      if (!origin) return callback(null, true);
+      // Si no se define CORS_ORIGIN, permitir todo (comportamiento actual)
+      if (allowedOrigins.length === 0) return callback(null, true);
+      // Permitir solo orígenes configurados
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Static uploads
@@ -58,6 +77,11 @@ app.get('/api/_debug/routes', (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+// Healthcheck básico en raíz
+app.get('/', (req, res) => {
+  res.send('SJ-Empleados API OK');
 });
 
 // DB Connection con fallback en memoria para desarrollo
