@@ -370,7 +370,9 @@
 
 .table-responsive {
   border-radius: 0.5rem;
-  overflow: hidden;
+  /* Permitir scroll horizontal en tablas anchas en escritorio */
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* Badge improvements */
@@ -460,18 +462,18 @@
     font-size: 16px; /* Prevents zoom on iOS */
   }
   
-  /* Table responsive improvements */
-  .table-responsive {
-    font-size: 0.875rem;
-    border-radius: var(--border-radius-sm);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1rem;
-  }
-  
-  .table-responsive .table {
-    margin-bottom: 0;
-    min-width: 600px; /* Fuerza scroll horizontal en tablas complejas */
-  }
+/* Table responsive improvements */
+.table-responsive {
+  font-size: 0.875rem;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+
+.table-responsive .table {
+  margin-bottom: 0;
+  min-width: 600px; /* Fuerza scroll horizontal en tablas complejas */
+}
   
   .table th, .table td {
     white-space: nowrap;
@@ -512,10 +514,20 @@
 
 /* Estilos para tarjetas móviles */
 .mobile-card {
+  background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
+}
+
+/* Monto ligeramente más grande en tarjetas móviles */
+.mobile-view .amount-value {
+  font-size: 1rem; /* ligeramente mayor que 0.875rem */
+  font-weight: 600;
+  display: inline-block;
+  line-height: 1.4;
+  margin: 4px 0; /* un poquito más de aire vertical */
 }
 
 .mobile-card:hover {
@@ -688,4 +700,50 @@
 .form-select:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+/* Payroll desktop table improvements */
+.payroll-table {
+  min-width: 1024px; /* Más espacio para columnas resumidas */
+}
+
+.payroll-table td, .payroll-table th {
+  vertical-align: middle;
+}
+
+.payroll-table .cell-stacked > div {
+  margin-bottom: 0.25rem;
+}
+
+.payroll-table .text-truncate {
+  max-width: 220px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Sortable header cursor for payroll table */
+.payroll-table th[role="button"] {
+  cursor: pointer;
+}
+/* Attendance desktop table improvements */
+.attendance-table {
+  min-width: 1024px; /* Más espacio para columnas separadas */
+}
+
+.attendance-table td, .attendance-table th {
+  vertical-align: middle;
+}
+
+.attendance-table th[role="button"] {
+  cursor: pointer;
+}
+
+/* Chip style for employee name with better contrast */
+.attendance-table .employee-name-chip {
+  background-color: rgba(241, 245, 249, 0.9);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
 }

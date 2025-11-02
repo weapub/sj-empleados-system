@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaSortUp, FaSortDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { Table, Button, Card, Badge, Row, Col, Form } from 'react-bootstrap';
 import DocumentViewerModal from '../common/DocumentViewerModal';
@@ -17,6 +18,8 @@ const AttendanceList = () => {
   });
   const [viewerUrl, setViewerUrl] = useState(null);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [sortBy, setSortBy] = useState('date');
+  const [sortDir, setSortDir] = useState('desc');
 
   useEffect(() => {
     const loadData = async () => {
@@ -76,6 +79,97 @@ const AttendanceList = () => {
     return date.toLocaleDateString('es-AR');
   };
 
+  const typePriority = (type) => {
+    // Define an order: inasistencia > tardanza > licencia medica > vacaciones > otros
+    const order = {
+      'inasistencia': 4,
+      'tardanza': 3,
+      'licencia medica': 2,
+      'vacaciones': 1
+    };
+    return order[type] ?? 0;
+  };
+
+  const statusScore = (a) => {
+    // Higher score means more "favorable" status
+    // Justificado (2) + Presentismo conservado (1)
+    const justifiedScore = a.justified ? 2 : 0;
+    const presentismoScore = a.lostPresentismo ? 0 : 1;
+    return justifiedScore + presentismoScore;
+  };
+
+  const typeAbbrev = (type) => {
+    switch ((type || '').toLowerCase()) {
+      case 'inasistencia': return 'INAS';
+      case 'tardanza': return 'TARD';
+      case 'licencia medica': return 'LIC MED';
+      case 'vacaciones': return 'VAC';
+      default: return (type || '').toUpperCase();
+    }
+  };
+
+  const handleSort = (e, key) => {
+    if (e && e.altKey) {
+      setSortBy('date');
+      setSortDir('desc');
+      return;
+    }
+    if (sortBy === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(key);
+      setSortDir('asc');
+    }
+  };
+
+  const renderSort = (key) => {
+    if (sortBy !== key) return null;
+    return sortDir === 'asc' ? <FaSortUp className="ms-1" /> : <FaSortDown className="ms-1" />;
+  };
+
+  const getName = (att) => att.employee ? `${att.employee.nombre} ${att.employee.apellido}` : 'Desconocido';
+
+  const sortedAttendances = [...filteredAttendances].sort((a, b) => {
+    let va = 0, vb = 0;
+    switch (sortBy) {
+      case 'employee':
+        va = getName(a).toLowerCase();
+        vb = getName(b).toLowerCase();
+        break;
+      case 'date':
+        va = new Date(a.date).getTime();
+        vb = new Date(b.date).getTime();
+        break;
+      case 'type':
+        va = typePriority(a.type);
+        vb = typePriority(b.type);
+        break;
+      case 'justified':
+        va = a.justified ? 1 : 0;
+        vb = b.justified ? 1 : 0;
+        break;
+      case 'presentismo':
+        // 1 si conserva presentismo, 0 si lo pierde
+        va = a.lostPresentismo ? 0 : 1;
+        vb = b.lostPresentismo ? 0 : 1;
+        break;
+      case 'status':
+        va = statusScore(a);
+        vb = statusScore(b);
+        break;
+      case 'late':
+        va = a.lateMinutes ?? 0;
+        vb = b.lateMinutes ?? 0;
+        break;
+      default:
+        va = new Date(a.date).getTime();
+        vb = new Date(b.date).getTime();
+    }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   const openViewer = (url) => {
     setViewerUrl(url);
     setViewerOpen(true);
@@ -84,6 +178,16 @@ const AttendanceList = () => {
   const closeViewer = () => {
     setViewerOpen(false);
     setViewerUrl(null);
+  };
+
+  const isPdfUrl = (url) => {
+    if (!url) return false;
+    return /\.pdf($|\?)/i.test(url);
+  };
+
+  const isImageUrl = (url) => {
+    if (!url) return false;
+    return /\.(jpg|jpeg|png)($|\?)/i.test(url);
   };
 
   if (loading) return <div>Cargando...</div>;
@@ -99,7 +203,7 @@ const AttendanceList = () => {
       <Card.Body>
         {error && <div className="alert alert-danger">{error}</div>}
         
-        <Row className="mb-3">
+        <Row className="mb-3 align-items-end">
           <Col md={4}>
             <Form.Group>
               <Form.Label>Filtrar por Empleado</Form.Label>
@@ -131,7 +235,7 @@ const AttendanceList = () => {
               </Form.Select>
             </Form.Group>
           </Col>
-          <Col md={4}>
+          <Col md={3}>
             <Form.Group>
               <Form.Label>Justificado</Form.Label>
               <Form.Select
@@ -145,74 +249,89 @@ const AttendanceList = () => {
               </Form.Select>
             </Form.Group>
           </Col>
+          <Col md={1} className="d-flex justify-content-end">
+            <Button
+              variant="outline-secondary"
+              className="mt-2"
+              onClick={() => { setSortBy('date'); setSortDir('desc'); }}
+            >
+              Reset orden
+            </Button>
+          </Col>
         </Row>
         
-        {/* Vista de escritorio - Tabla */}
+        {/* Vista de escritorio - Tabla con columna de Estado (tipo/justificado/presentismo) */}
         <div className="desktop-view">
-          <Table striped bordered hover responsive>
+          <Table striped bordered hover responsive className="attendance-table">
             <thead>
               <tr>
-                <th>Empleado</th>
-                <th>Fecha</th>
-                <th>Tipo</th>
-                <th>Hora establecida</th>
-                <th>Hora registrada</th>
-                <th>Min tardanza</th>
+                <th role="button" onClick={(e) => handleSort(e, 'employee')}>
+                  Empleado {renderSort('employee')}
+                </th>
+                <th role="button" onClick={(e) => handleSort(e, 'date')}>
+                  Fecha {renderSort('date')}
+                </th>
+                <th role="button" onClick={(e) => handleSort(e, 'status')}>
+                  Estado {renderSort('status')}
+                </th>
+                <th>Establecida</th>
+                <th>Registrada</th>
+                <th role="button" onClick={(e) => handleSort(e, 'late')}>
+                  Min. tardanza {renderSort('late')}
+                </th>
                 <th>Vence cert.</th>
-                <th>Vac. inicio</th>
-                <th>Vac. fin</th>
+                <th>Inicio vacaciones</th>
+                <th>Fin vacaciones</th>
                 <th>Reincorporación</th>
-                <th>Justificado</th>
-                <th>Presentismo</th>
                 <th>Certificado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {filteredAttendances.length > 0 ? (
-                filteredAttendances.map(attendance => (
+              {sortedAttendances.length > 0 ? (
+                sortedAttendances.map(attendance => (
                   <tr key={attendance._id}>
-                    <td>{attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Desconocido'}</td>
+                    <td className="text-truncate" title={getName(attendance)}>
+                      <span className="employee-name-chip">{getName(attendance)}</span>
+                    </td>
                     <td>{formatDate(attendance.date)}</td>
                     <td>
-                      <Badge bg={
-                        attendance.type === 'inasistencia' ? 'danger' :
-                        attendance.type === 'tardanza' ? 'warning' :
-                        attendance.type === 'licencia medica' ? 'info' :
-                        attendance.type === 'vacaciones' ? 'secondary' : 'dark'
-                      }>
-                        {attendance.type}
-                      </Badge>
+                      <div
+                        className="d-flex flex-wrap align-items-center"
+                        title={`${attendance.type}: ${attendance.justified ? 'Justificado' : 'No justificado'} / ${attendance.lostPresentismo ? 'Sin presentismo' : 'Con presentismo'}`}
+                      >
+                        <Badge
+                          className="me-1 mb-1"
+                          bg={attendance.type === 'inasistencia' ? 'danger' : attendance.type === 'tardanza' ? 'warning' : attendance.type === 'licencia medica' ? 'info' : 'secondary'}
+                        >
+                          {typeAbbrev(attendance.type)}
+                        </Badge>
+                        <Badge className="me-1 mb-1" bg={attendance.justified ? 'success' : 'danger'}>
+                          {attendance.justified ? 'JUST' : 'NO JUST'}
+                        </Badge>
+                        <Badge className="mb-1" bg={attendance.lostPresentismo ? 'danger' : 'success'}>
+                          {attendance.lostPresentismo ? 'SIN PRES' : 'CON PRES'}
+                        </Badge>
+                      </div>
                     </td>
-                    <td>{attendance.type === 'tardanza' ? (attendance.scheduledEntry || '-') : '-'}</td>
-                    <td>{attendance.type === 'tardanza' ? (attendance.actualEntry || '-') : '-'}</td>
-                    <td>{attendance.type === 'tardanza' ? (attendance.lateMinutes ?? 0) : '-'}</td>
-                    <td>{attendance.type === 'licencia medica' && attendance.certificateExpiry ? formatDate(attendance.certificateExpiry) : '-'}</td>
-                    <td>{attendance.type === 'vacaciones' && attendance.vacationsStart ? formatDate(attendance.vacationsStart) : '-'}</td>
-                    <td>{attendance.type === 'vacaciones' && attendance.vacationsEnd ? formatDate(attendance.vacationsEnd) : '-'}</td>
+                    <td>{attendance.scheduledEntry || '-'}</td>
+                    <td>{attendance.actualEntry || '-'}</td>
+                    <td>{attendance.lateMinutes ?? 0}</td>
+                    <td>{attendance.certificateExpiry ? formatDate(attendance.certificateExpiry) : '-'}</td>
+                    <td>{attendance.vacationsStart ? formatDate(attendance.vacationsStart) : '-'}</td>
+                    <td>{attendance.vacationsEnd ? formatDate(attendance.vacationsEnd) : '-'}</td>
                     <td>{attendance.returnToWorkDate ? formatDate(attendance.returnToWorkDate) : '-'}</td>
-                    <td>
-                      <Badge bg={attendance.justified ? 'success' : 'danger'}>
-                        {attendance.justified ? 'Sí' : 'No'}
-                      </Badge>
-                    </td>
-                    <td>
-                      <Badge bg={attendance.lostPresentismo ? 'danger' : 'success'}>
-                        {attendance.lostPresentismo ? 'Perdido' : 'Conservado'}
-                      </Badge>
-                    </td>
                     <td>
                       {attendance.justificationDocument ? (
                         <Button 
                           variant="outline-secondary" 
-                          size="sm"
+                          size="sm" 
+                          className="me-2"
                           onClick={() => openViewer(attendance.justificationDocument)}
                         >
                           Ver certificado
                         </Button>
-                      ) : (
-                        'No disponible'
-                      )}
+                      ) : '-'}
                     </td>
                     <td>
                       <Link to={`/attendance/edit/${attendance._id}`} className="btn btn-sm btn-primary me-2">
@@ -230,7 +349,7 @@ const AttendanceList = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="14" className="text-center">No hay registros que coincidan con los filtros</td>
+                  <td colSpan="12" className="text-center">No hay registros que coincidan con los filtros</td>
                 </tr>
               )}
             </tbody>
