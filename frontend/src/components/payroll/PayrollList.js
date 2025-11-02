@@ -4,6 +4,7 @@ import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { getAllPayrollReceipts, deletePayrollReceipt } from '../../services/api';
+import MobileCard from '../common/MobileCard';
 
 const daysInMonth = (period) => {
   // period in format YYYY-MM
@@ -123,67 +124,134 @@ const PayrollList = () => {
       {loading ? (
         <p>Cargando...</p>
       ) : (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Empleado</th>
-              <th>Periodo</th>
-              <th>Fecha de Pago</th>
-              <th>Firmado</th>
-              <th>Fecha Firma</th>
-              <th>Presentismo</th>
-              <th>Horas Extras</th>
-              <th>Otros Adicionales</th>
-              <th>Descuentos</th>
-              <th>Adelanto</th>
-              <th>Monto Adelanto</th>
-              <th>NETO A COBRAR</th>
-              <th>Monto Semanal</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Vista de escritorio */}
+          <div className="d-none d-md-block">
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Empleado</th>
+                  <th>Periodo</th>
+                  <th>Fecha de Pago</th>
+                  <th>Firmado</th>
+                  <th>Fecha Firma</th>
+                  <th>Presentismo</th>
+                  <th>Horas Extras</th>
+                  <th>Otros Adicionales</th>
+                  <th>Descuentos</th>
+                  <th>Adelanto</th>
+                  <th>Monto Adelanto</th>
+                  <th>NETO A COBRAR</th>
+                  <th>Monto Semanal</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredReceipts.length === 0 ? (
+                  <tr>
+                    <td colSpan="14" className="text-center">No hay recibos registrados</td>
+                  </tr>
+                ) : (
+                  filteredReceipts.map((r) => {
+                    const dim = daysInMonth(r.period);
+                    const netToPay = Number(r.netAmount) || 0; // backend already guarda neto final
+                    const weekly = Math.round((netToPay / dim) * 7);
+                    return (
+                      <tr key={r._id}>
+                        <td>{r.employee ? `${r.employee.nombre} ${r.employee.apellido} (${r.employee.legajo})` : '-'}</td>
+                        <td>{r.period}</td>
+                        <td>{formatDate(r.paymentDate)}</td>
+                        <td>{r.signed ? 'Sí' : 'No'}</td>
+                        <td>{formatDate(r.signedDate)}</td>
+                        <td><Badge bg={r.hasPresentismo ? 'success' : 'secondary'}>{r.hasPresentismo ? 'Sí' : 'No'}</Badge></td>
+                        <td>{formatCurrency(r.extraHours)}</td>
+                        <td>{formatCurrency(r.otherAdditions)}</td>
+                        <td>{formatCurrency(r.discounts)}</td>
+                        <td>{r.advanceRequested ? 'Sí' : 'No'}</td>
+                        <td>{formatCurrency(r.advanceAmount)}</td>
+                        <td>{formatCurrency(netToPay)}</td>
+                        <td>{formatCurrency(weekly)}</td>
+                        <td>
+                          <Button variant="outline-secondary" size="sm" className="me-2" onClick={() => navigate(`/payroll/${r._id}`)}>
+                            Ver
+                          </Button>
+                          <Button variant="outline-primary" size="sm" className="me-2" onClick={() => navigate(`/payroll/edit/${r._id}`)}>
+                            <FaEdit />
+                          </Button>
+                          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(r._id)}>
+                            <FaTrash />
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </Table>
+          </div>
+
+          {/* Vista móvil */}
+          <div className="d-md-none">
             {filteredReceipts.length === 0 ? (
-              <tr>
-                <td colSpan="14" className="text-center">No hay recibos registrados</td>
-              </tr>
+              <p className="text-center">No hay recibos registrados</p>
             ) : (
               filteredReceipts.map((r) => {
                 const dim = daysInMonth(r.period);
-                const netToPay = Number(r.netAmount) || 0; // backend already guarda neto final
+                const netToPay = Number(r.netAmount) || 0;
                 const weekly = Math.round((netToPay / dim) * 7);
                 return (
-                  <tr key={r._id}>
-                    <td>{r.employee ? `${r.employee.nombre} ${r.employee.apellido} (${r.employee.legajo})` : '-'}</td>
-                    <td>{r.period}</td>
-                    <td>{formatDate(r.paymentDate)}</td>
-                    <td>{r.signed ? 'Sí' : 'No'}</td>
-                    <td>{formatDate(r.signedDate)}</td>
-                    <td><Badge bg={r.hasPresentismo ? 'success' : 'secondary'}>{r.hasPresentismo ? 'Sí' : 'No'}</Badge></td>
-                    <td>{formatCurrency(r.extraHours)}</td>
-                    <td>{formatCurrency(r.otherAdditions)}</td>
-                    <td>{formatCurrency(r.discounts)}</td>
-                    <td>{r.advanceRequested ? 'Sí' : 'No'}</td>
-                    <td>{formatCurrency(r.advanceAmount)}</td>
-                    <td>{formatCurrency(netToPay)}</td>
-                    <td>{formatCurrency(weekly)}</td>
-                    <td>
-                      <Button variant="outline-secondary" size="sm" className="me-2" onClick={() => navigate(`/payroll/${r._id}`)}>
-                        Ver
-                      </Button>
-                      <Button variant="outline-primary" size="sm" className="me-2" onClick={() => navigate(`/payroll/edit/${r._id}`)}>
-                        <FaEdit />
-                      </Button>
-                      <Button variant="outline-danger" size="sm" onClick={() => handleDelete(r._id)}>
-                        <FaTrash />
-                      </Button>
-                    </td>
-                  </tr>
+                  <MobileCard
+                    key={r._id}
+                    title={r.employee ? `${r.employee.nombre} ${r.employee.apellido}` : 'Sin empleado'}
+                    subtitle={`Período: ${r.period} | Legajo: ${r.employee?.legajo || '-'}`}
+                    fields={[
+                      { label: 'Fecha de Pago', value: formatDate(r.paymentDate) },
+                      { label: 'Horas Extras', value: formatCurrency(r.extraHours) },
+                      { label: 'Otros Adicionales', value: formatCurrency(r.otherAdditions) },
+                      { label: 'Descuentos', value: formatCurrency(r.discounts) },
+                      { label: 'Monto Adelanto', value: formatCurrency(r.advanceAmount) },
+                      { label: 'Monto Semanal', value: formatCurrency(weekly) }
+                    ]}
+                    badges={[
+                      { 
+                        text: `Neto: ${formatCurrency(netToPay)}`, 
+                        variant: 'success' 
+                      },
+                      { 
+                        text: r.hasPresentismo ? 'Con Presentismo' : 'Sin Presentismo', 
+                        variant: r.hasPresentismo ? 'success' : 'secondary' 
+                      },
+                      { 
+                        text: r.signed ? 'Firmado' : 'Sin Firmar', 
+                        variant: r.signed ? 'info' : 'warning' 
+                      }
+                    ]}
+                    actions={[
+                      {
+                        text: 'Ver',
+                        variant: 'outline-secondary',
+                        size: 'sm',
+                        onClick: () => navigate(`/payroll/${r._id}`)
+                      },
+                      {
+                        text: <FaEdit />,
+                        variant: 'outline-primary',
+                        size: 'sm',
+                        onClick: () => navigate(`/payroll/edit/${r._id}`)
+                      },
+                      {
+                        text: <FaTrash />,
+                        variant: 'outline-danger',
+                        size: 'sm',
+                        onClick: () => handleDelete(r._id)
+                      }
+                    ]}
+                  />
                 );
               })
             )}
-          </tbody>
-        </Table>
+          </div>
+        </>
       )}
     </Container>
   );

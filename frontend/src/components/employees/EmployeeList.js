@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getEmployees, deleteEmployee } from '../../services/api';
+import MobileCard from '../common/MobileCard';
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -62,42 +63,79 @@ const EmployeeList = () => {
       {employees.length === 0 ? (
         <Alert variant="info">No hay empleados registrados</Alert>
       ) : (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Puesto</th>
-              <th>Departamento</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Vista de escritorio - Tabla */}
+          <div className="desktop-view">
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Puesto</th>
+                  <th>Departamento</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees.map(employee => (
+                  <tr key={employee._id}>
+                    <td>{employee.nombre} {employee.apellido}</td>
+                    <td>{employee.email}</td>
+                    <td>{employee.puesto}</td>
+                    <td>{employee.departamento}</td>
+                    <td>
+                      <Link to={`/employees/${employee._id}`}>
+                        <Button variant="info" size="sm" className="me-2">Ver</Button>
+                      </Link>
+                      <Link to={`/employees/edit/${employee._id}`}>
+                        <Button variant="warning" size="sm" className="me-2">Editar</Button>
+                      </Link>
+                      <Button 
+                        variant="danger" 
+                        size="sm"
+                        onClick={() => handleDelete(employee._id)}
+                      >
+                        Eliminar
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+
+          {/* Vista móvil - Tarjetas */}
+          <div className="mobile-view">
             {employees.map(employee => (
-              <tr key={employee._id}>
-                <td>{employee.nombre} {employee.apellido}</td>
-                <td>{employee.email}</td>
-                <td>{employee.puesto}</td>
-                <td>{employee.departamento}</td>
-                <td>
-                  <Link to={`/employees/${employee._id}`}>
-                    <Button variant="info" size="sm" className="me-2">Ver</Button>
-                  </Link>
-                  <Link to={`/employees/edit/${employee._id}`}>
-                    <Button variant="warning" size="sm" className="me-2">Editar</Button>
-                  </Link>
-                  <Button 
-                    variant="danger" 
-                    size="sm"
-                    onClick={() => handleDelete(employee._id)}
-                  >
-                    Eliminar
-                  </Button>
-                </td>
-              </tr>
+              <MobileCard
+                key={employee._id}
+                title={`${employee.nombre} ${employee.apellido}`}
+                subtitle={employee.email}
+                fields={[
+                  { label: 'Puesto', value: employee.puesto || 'No especificado' },
+                  { label: 'Departamento', value: employee.departamento || 'No especificado' }
+                ]}
+                actions={[
+                  {
+                    text: 'Ver',
+                    variant: 'info',
+                    onClick: () => window.location.href = `/employees/${employee._id}`
+                  },
+                  {
+                    text: 'Editar',
+                    variant: 'warning',
+                    onClick: () => window.location.href = `/employees/edit/${employee._id}`
+                  },
+                  {
+                    text: 'Eliminar',
+                    variant: 'danger',
+                    onClick: () => handleDelete(employee._id)
+                  }
+                ]}
+              />
             ))}
-          </tbody>
-        </Table>
+          </div>
+        </>
       )}
     </div>
   );

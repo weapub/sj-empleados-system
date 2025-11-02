@@ -510,6 +510,102 @@
   }
 }
 
+/* Estilos para tarjetas móviles */
+.mobile-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.mobile-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.mobile-card-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.mobile-card-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.mobile-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.mobile-card-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-card-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mobile-card-field:last-child {
+  border-bottom: none;
+}
+
+.field-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  flex: 0 0 40%;
+}
+
+.field-value {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  text-align: right;
+  flex: 1;
+  word-break: break-word;
+}
+
+.mobile-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Ocultar tablas en móviles y mostrar tarjetas */
+@media (max-width: 768px) {
+  .table-responsive {
+    display: none !important;
+  }
+  
+  .mobile-view {
+    display: block !important;
+  }
+  
+  .desktop-view {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-view {
+    display: none !important;
+  }
+  
+  .desktop-view {
+    display: block !important;
+  }
+}
+
 @media (max-width: 576px) {
   /* Extra small screens */
   .dashboard-header h1 {
@@ -552,6 +648,23 @@
   
   .table th, .table td {
     padding: 0.5rem 0.25rem;
+  }
+  
+  /* Mobile card improvements for extra small screens */
+  .mobile-card-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .field-label {
+    flex: none;
+  }
+  
+  .field-value {
+    text-align: left;
+    flex: none;
+    width: 100%;
   }
 }
 

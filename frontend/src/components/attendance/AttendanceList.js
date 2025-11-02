@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, Button, Card, Badge, Row, Col, Form } from 'react-bootstrap';
 import DocumentViewerModal from '../common/DocumentViewerModal';
+import MobileCard from '../common/MobileCard';
 import { getAttendances, getEmployees, deleteAttendance } from '../../services/api';
 
 const AttendanceList = () => {
@@ -146,92 +147,184 @@ const AttendanceList = () => {
           </Col>
         </Row>
         
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Empleado</th>
-              <th>Fecha</th>
-              <th>Tipo</th>
-              <th>Hora establecida</th>
-              <th>Hora registrada</th>
-              <th>Min tardanza</th>
-              <th>Vence cert.</th>
-              <th>Vac. inicio</th>
-              <th>Vac. fin</th>
-              <th>Reincorporación</th>
-              <th>Justificado</th>
-              <th>Presentismo</th>
-              <th>Certificado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAttendances.length > 0 ? (
-              filteredAttendances.map(attendance => (
-                <tr key={attendance._id}>
-                  <td>{attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Desconocido'}</td>
-                  <td>{formatDate(attendance.date)}</td>
-                  <td>
-                    <Badge bg={
-                      attendance.type === 'inasistencia' ? 'danger' :
-                      attendance.type === 'tardanza' ? 'warning' :
-                      attendance.type === 'licencia medica' ? 'info' :
-                      attendance.type === 'vacaciones' ? 'secondary' : 'dark'
-                    }>
-                      {attendance.type}
-                    </Badge>
-                  </td>
-                  <td>{attendance.type === 'tardanza' ? (attendance.scheduledEntry || '-') : '-'}</td>
-                  <td>{attendance.type === 'tardanza' ? (attendance.actualEntry || '-') : '-'}</td>
-                  <td>{attendance.type === 'tardanza' ? (attendance.lateMinutes ?? 0) : '-'}</td>
-                  <td>{attendance.type === 'licencia medica' && attendance.certificateExpiry ? formatDate(attendance.certificateExpiry) : '-'}</td>
-                  <td>{attendance.type === 'vacaciones' && attendance.vacationsStart ? formatDate(attendance.vacationsStart) : '-'}</td>
-                  <td>{attendance.type === 'vacaciones' && attendance.vacationsEnd ? formatDate(attendance.vacationsEnd) : '-'}</td>
-                  <td>{attendance.returnToWorkDate ? formatDate(attendance.returnToWorkDate) : '-'}</td>
-                  <td>
-                    <Badge bg={attendance.justified ? 'success' : 'danger'}>
-                      {attendance.justified ? 'Sí' : 'No'}
-                    </Badge>
-                  </td>
-                  <td>
-                    <Badge bg={attendance.lostPresentismo ? 'danger' : 'success'}>
-                      {attendance.lostPresentismo ? 'Perdido' : 'Conservado'}
-                    </Badge>
-                  </td>
-                  <td>
-                    {attendance.justificationDocument ? (
-                      <Button 
-                        variant="outline-secondary" 
-                        size="sm"
-                        onClick={() => openViewer(attendance.justificationDocument)}
-                      >
-                        Ver certificado
-                      </Button>
-                    ) : (
-                      'No disponible'
-                    )}
-                  </td>
-                  <td>
-                    <Link to={`/attendance/edit/${attendance._id}`} className="btn btn-sm btn-primary me-2">
-                      Editar
-                    </Link>
-                    <Button 
-                      variant="danger" 
-                      size="sm" 
-                      onClick={() => handleDelete(attendance._id)}
-                    >
-                      Eliminar
-                    </Button>
-                  </td>
-                </tr>
-              ))
-            ) : (
+        {/* Vista de escritorio - Tabla */}
+        <div className="desktop-view">
+          <Table striped bordered hover responsive>
+            <thead>
               <tr>
-                <td colSpan="7" className="text-center">No hay registros que coincidan con los filtros</td>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Hora establecida</th>
+                <th>Hora registrada</th>
+                <th>Min tardanza</th>
+                <th>Vence cert.</th>
+                <th>Vac. inicio</th>
+                <th>Vac. fin</th>
+                <th>Reincorporación</th>
+                <th>Justificado</th>
+                <th>Presentismo</th>
+                <th>Certificado</th>
+                <th>Acciones</th>
               </tr>
-            )}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {filteredAttendances.length > 0 ? (
+                filteredAttendances.map(attendance => (
+                  <tr key={attendance._id}>
+                    <td>{attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Desconocido'}</td>
+                    <td>{formatDate(attendance.date)}</td>
+                    <td>
+                      <Badge bg={
+                        attendance.type === 'inasistencia' ? 'danger' :
+                        attendance.type === 'tardanza' ? 'warning' :
+                        attendance.type === 'licencia medica' ? 'info' :
+                        attendance.type === 'vacaciones' ? 'secondary' : 'dark'
+                      }>
+                        {attendance.type}
+                      </Badge>
+                    </td>
+                    <td>{attendance.type === 'tardanza' ? (attendance.scheduledEntry || '-') : '-'}</td>
+                    <td>{attendance.type === 'tardanza' ? (attendance.actualEntry || '-') : '-'}</td>
+                    <td>{attendance.type === 'tardanza' ? (attendance.lateMinutes ?? 0) : '-'}</td>
+                    <td>{attendance.type === 'licencia medica' && attendance.certificateExpiry ? formatDate(attendance.certificateExpiry) : '-'}</td>
+                    <td>{attendance.type === 'vacaciones' && attendance.vacationsStart ? formatDate(attendance.vacationsStart) : '-'}</td>
+                    <td>{attendance.type === 'vacaciones' && attendance.vacationsEnd ? formatDate(attendance.vacationsEnd) : '-'}</td>
+                    <td>{attendance.returnToWorkDate ? formatDate(attendance.returnToWorkDate) : '-'}</td>
+                    <td>
+                      <Badge bg={attendance.justified ? 'success' : 'danger'}>
+                        {attendance.justified ? 'Sí' : 'No'}
+                      </Badge>
+                    </td>
+                    <td>
+                      <Badge bg={attendance.lostPresentismo ? 'danger' : 'success'}>
+                        {attendance.lostPresentismo ? 'Perdido' : 'Conservado'}
+                      </Badge>
+                    </td>
+                    <td>
+                      {attendance.justificationDocument ? (
+                        <Button 
+                          variant="outline-secondary" 
+                          size="sm"
+                          onClick={() => openViewer(attendance.justificationDocument)}
+                        >
+                          Ver certificado
+                        </Button>
+                      ) : (
+                        'No disponible'
+                      )}
+                    </td>
+                    <td>
+                      <Link to={`/attendance/edit/${attendance._id}`} className="btn btn-sm btn-primary me-2">
+                        Editar
+                      </Link>
+                      <Button 
+                        variant="danger" 
+                        size="sm" 
+                        onClick={() => handleDelete(attendance._id)}
+                      >
+                        Eliminar
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="14" className="text-center">No hay registros que coincidan con los filtros</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </div>
+
+        {/* Vista móvil - Tarjetas */}
+        <div className="mobile-view">
+          {filteredAttendances.length > 0 ? (
+            filteredAttendances.map(attendance => {
+              // Preparar campos dinámicos según el tipo
+              const fields = [
+                { label: 'Fecha', value: formatDate(attendance.date) }
+              ];
+
+              // Agregar campos específicos según el tipo
+              if (attendance.type === 'tardanza') {
+                if (attendance.scheduledEntry) fields.push({ label: 'Hora establecida', value: attendance.scheduledEntry });
+                if (attendance.actualEntry) fields.push({ label: 'Hora registrada', value: attendance.actualEntry });
+                if (attendance.lateMinutes) fields.push({ label: 'Minutos tarde', value: attendance.lateMinutes });
+              }
+
+              if (attendance.type === 'licencia medica' && attendance.certificateExpiry) {
+                fields.push({ label: 'Vence certificado', value: formatDate(attendance.certificateExpiry) });
+              }
+
+              if (attendance.type === 'vacaciones') {
+                if (attendance.vacationsStart) fields.push({ label: 'Inicio vacaciones', value: formatDate(attendance.vacationsStart) });
+                if (attendance.vacationsEnd) fields.push({ label: 'Fin vacaciones', value: formatDate(attendance.vacationsEnd) });
+              }
+
+              if (attendance.returnToWorkDate) {
+                fields.push({ label: 'Reincorporación', value: formatDate(attendance.returnToWorkDate) });
+              }
+
+              // Preparar badges
+              const badges = [
+                {
+                  text: attendance.type,
+                  variant: attendance.type === 'inasistencia' ? 'danger' :
+                          attendance.type === 'tardanza' ? 'warning' :
+                          attendance.type === 'licencia medica' ? 'info' :
+                          attendance.type === 'vacaciones' ? 'secondary' : 'dark'
+                },
+                {
+                  text: attendance.justified ? 'Justificado' : 'No justificado',
+                  variant: attendance.justified ? 'success' : 'danger'
+                },
+                {
+                  text: attendance.lostPresentismo ? 'Sin presentismo' : 'Con presentismo',
+                  variant: attendance.lostPresentismo ? 'danger' : 'success'
+                }
+              ];
+
+              // Preparar acciones
+              const actions = [
+                {
+                  text: 'Editar',
+                  variant: 'primary',
+                  onClick: () => window.location.href = `/attendance/edit/${attendance._id}`
+                },
+                {
+                  text: 'Eliminar',
+                  variant: 'danger',
+                  onClick: () => handleDelete(attendance._id)
+                }
+              ];
+
+              // Agregar acción de ver certificado si existe
+              if (attendance.justificationDocument) {
+                actions.unshift({
+                  text: 'Ver certificado',
+                  variant: 'outline-secondary',
+                  onClick: () => openViewer(attendance.justificationDocument)
+                });
+              }
+
+              return (
+                <MobileCard
+                  key={attendance._id}
+                  title={attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Empleado desconocido'}
+                  subtitle={`${attendance.type} - ${formatDate(attendance.date)}`}
+                  fields={fields}
+                  badges={badges}
+                  actions={actions}
+                />
+              );
+            })
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-muted">No hay registros que coincidan con los filtros</p>
+            </div>
+          )}
+        </div>
       </Card.Body>
       <DocumentViewerModal 
         show={viewerOpen}
