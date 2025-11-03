@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Alert, Spinner } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getEmployees, deleteEmployee } from '../../services/api';
 import MobileCard from '../common/MobileCard';
 
 const EmployeeList = () => {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -119,12 +120,12 @@ const EmployeeList = () => {
                   {
                     text: 'Ver',
                     variant: 'info',
-                    onClick: () => window.location.href = `/employees/${employee._id}`
+                    onClick: () => navigate(`/employees/${employee._id}`)
                   },
                   {
                     text: 'Editar',
                     variant: 'warning',
-                    onClick: () => window.location.href = `/employees/edit/${employee._id}`
+                    onClick: () => navigate(`/employees/edit/${employee._id}`)
                   },
                   {
                     text: 'Eliminar',
