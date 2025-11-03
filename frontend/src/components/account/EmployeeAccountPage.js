@@ -3,6 +3,7 @@ import { Form, Button, Row, Col, Table, Alert, Spinner, Card, Container } from '
 import { FaUser, FaWallet, FaShoppingCart, FaMoneyBillWave, FaHistory, FaCog } from 'react-icons/fa';
 import { getEmployees } from '../../services/api';
 import { getEmployeeAccount, updateWeeklyDeduction, addAccountPurchase, addAccountPayment } from '../../services/api';
+import MobileCard from '../common/MobileCard';
 
 const EmployeeAccountPage = () => {
   const [employees, setEmployees] = useState([]);
@@ -26,6 +27,17 @@ const EmployeeAccountPage = () => {
         setLoading(true);
         const data = await getEmployees();
         setEmployees(data);
+        // Autoseleccionar el primer empleado para cargar la cuenta automáticamente
+        if (Array.isArray(data) && data.length > 0 && !selectedEmployee) {
+          const firstId = data[0]._id;
+          setSelectedEmployee(firstId);
+          // Cargar la cuenta del primer empleado
+          try {
+            await loadAccount(firstId);
+          } catch (e) {
+            // Mantener el error ya gestionado en loadAccount
+          }
+        }
       } catch (err) {
         setError('Error al cargar empleados');
         console.error(err);
@@ -166,9 +178,9 @@ const EmployeeAccountPage = () => {
             <Col lg={4} md={6} className="mb-3">
               <Card className="h-100 balance-card">
                 <Card.Body className="text-center">
-                  <FaWallet size={40} className="text-primary mb-3" />
-                  <h5 className="card-title">Saldo Actual</h5>
-                  <h2 className="text-primary fw-bold">
+                  <FaWallet size={40} className="text-white mb-3" />
+                  <h5 className="card-title text-white">Saldo Actual</h5>
+                  <h2 className="text-white fw-bold">
                     ${account.balance?.toLocaleString('es-AR')}
                   </h2>
                 </Card.Body>
@@ -324,40 +336,70 @@ const EmployeeAccountPage = () => {
                   <div>No hay transacciones registradas</div>
                 </Alert>
               ) : (
-                <div className="table-responsive">
-                  <Table striped hover className="mb-0">
-                    <thead>
-                      <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Monto</th>
-                        <th>Descripción</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transactions.map(tx => (
-                        <tr key={tx._id}>
-                          <td>{new Date(tx.date).toLocaleString('es-AR')}</td>
-                          <td>
-                            <span className={`badge ${
-                              tx.type === 'purchase' ? 'bg-danger' : 
-                              tx.type === 'payment' ? 'bg-success' : 'bg-info'
-                            }`}>
-                              {tx.type === 'purchase' ? 'Compra' : 
-                               tx.type === 'payment' ? 'Pago' : 'Deducción Nómina'}
-                            </span>
-                          </td>
-                          <td className={`fw-bold ${
-                            tx.type === 'purchase' ? 'text-danger' : 'text-success'
-                          }`}>
-                            {tx.type === 'purchase' ? '-' : '+'}${tx.amount?.toLocaleString('es-AR')}
-                          </td>
-                          <td>{tx.description}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
+                <>
+                  {/* Vista de escritorio: tabla */}
+                  <div className="desktop-view">
+                    <div className="table-responsive">
+                      <Table striped hover className="mb-0">
+                        <thead>
+                          <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Monto</th>
+                            <th>Descripción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {transactions.map(tx => (
+                            <tr key={tx._id}>
+                              <td>{new Date(tx.date).toLocaleString('es-AR')}</td>
+                              <td>
+                                <span className={`badge ${
+                                  tx.type === 'purchase' ? 'bg-danger' : 
+                                  tx.type === 'payment' ? 'bg-success' : 'bg-info'
+                                }`}>
+                                  {tx.type === 'purchase' ? 'Compra' : 
+                                   tx.type === 'payment' ? 'Pago' : 'Deducción Nómina'}
+                                </span>
+                              </td>
+                              <td className={`fw-bold ${
+                                tx.type === 'purchase' ? 'text-danger' : 'text-success'
+                              }`}>
+                                {tx.type === 'purchase' ? '-' : '+'}${tx.amount?.toLocaleString('es-AR')}
+                              </td>
+                              <td>{tx.description}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </div>
+
+                  {/* Vista móvil: tarjetas */}
+                  <div className="mobile-view">
+                    {transactions.map(tx => {
+                      const typeText = tx.type === 'purchase' ? 'Compra' : tx.type === 'payment' ? 'Pago' : 'Deducción Nómina';
+                      const typeVariant = tx.type === 'purchase' ? 'danger' : tx.type === 'payment' ? 'success' : 'info';
+                      const amountSign = tx.type === 'purchase' ? '-' : '+';
+                      const amountClass = tx.type === 'purchase' ? 'text-danger' : 'text-success';
+                      const amountNode = (
+                        <span className={`amount-value ${amountClass}`}>{`${amountSign}$${tx.amount?.toLocaleString('es-AR')}`}</span>
+                      );
+                      return (
+                        <MobileCard
+                          key={tx._id}
+                          title={typeText}
+                          subtitle={new Date(tx.date).toLocaleString('es-AR')}
+                          badges={[{ text: typeText, variant: typeVariant }]}
+                          fields={[
+                            { label: 'Monto', value: amountNode },
+                            { label: 'Descripción', value: tx.description || '-' }
+                          ]}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </Card.Body>
           </Card>

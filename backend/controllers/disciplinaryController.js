@@ -17,7 +17,13 @@ exports.createDisciplinary = async (req, res) => {
     
     // Manejar la carga de archivos si hay un documento
     if (req.file) {
-      document = req.file.path; // Cloudinary devuelve la URL completa en req.file.path
+      const isHttpUrl = req.file.path && /^https?:\/\//i.test(req.file.path);
+      if (isHttpUrl) {
+        document = req.file.path;
+      } else if (req.file.filename) {
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        document = `${baseUrl}/uploads/${req.file.filename}`;
+      }
     }
 
     // Calcular reincorporación si corresponde
@@ -194,7 +200,13 @@ exports.updateDisciplinary = async (req, res) => {
         }
       }
       
-      disciplinary.document = req.file.path; // URL completa de Cloudinary
+      const isHttpUrl = req.file.path && /^https?:\/\//i.test(req.file.path);
+      if (isHttpUrl) {
+        disciplinary.document = req.file.path;
+      } else if (req.file.filename) {
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        disciplinary.document = `${baseUrl}/uploads/${req.file.filename}`;
+      }
     }
     
     await disciplinary.save();

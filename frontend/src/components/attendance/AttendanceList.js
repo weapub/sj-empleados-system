@@ -193,14 +193,14 @@ const AttendanceList = () => {
   if (loading) return <div>Cargando...</div>;
 
   return (
-    <Card className="shadow-sm">
-      <Card.Header className="bg-white d-flex justify-content-between align-items-center">
+    <div className="container-fluid">
+      <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="mb-0">Inasistencias y Tardanzas</h4>
         <Link to="/attendance/new">
           <Button variant="primary">Registrar Nueva</Button>
         </Link>
-      </Card.Header>
-      <Card.Body>
+      </div>
+      <div>
         {error && <div className="alert alert-danger">{error}</div>}
         
         <Row className="mb-3 align-items-end">
@@ -444,14 +444,14 @@ const AttendanceList = () => {
             </div>
           )}
         </div>
-      </Card.Body>
+      </div>
       <DocumentViewerModal 
         show={viewerOpen}
         onHide={closeViewer}
         url={viewerUrl}
         title="Documento de asistencia"
       />
-    </Card>
+    </div>
   );
 };
 

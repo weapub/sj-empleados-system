@@ -1,6 +1,8 @@
 const cloudinary = require('cloudinary');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
 // Configurar Cloudinary
 cloudinary.v2.config({
@@ -20,38 +22,66 @@ cloudinary.v2.config({
   }
 })();
 
-// Configurar storage para Multer con Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary.v2,
-  params: (req, file) => {
-    const mime = file.mimetype;
-    const isDoc = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ].includes(mime);
-    const timestamp = Date.now();
-    const originalName = file.originalname.split('.')[0];
-    const format = isDoc
-      ? (mime === 'application/pdf'
-          ? 'pdf'
-          : mime === 'application/msword'
-            ? 'doc'
-            : 'docx')
-      : undefined;
+// Elegir storage seguro: si faltan credenciales, usar disco para persistir localmente
+const hasCreds = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
 
-    return {
-      folder: 'empleados-app', // Carpeta en Cloudinary
-      allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
-      type: 'upload', // Forzar tipo de entrega estándar
-      access_mode: 'public', // Asegurar acceso público
-      resource_type: isDoc ? 'raw' : 'image', // PDFs/Docs como raw; imágenes como image
-      public_id: `${originalName}-${timestamp}`,
-      // Para recursos raw, especificar formato asegura que la URL incluya la extensión
-      ...(format ? { format } : {}),
-    };
-  },
-});
+let storage;
+if (hasCreds) {
+  storage = new CloudinaryStorage({
+    cloudinary: cloudinary.v2,
+    params: (req, file) => {
+      const mime = file.mimetype;
+      const isDoc = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ].includes(mime);
+      const timestamp = Date.now();
+      const originalName = file.originalname.split('.')[0];
+      const format = isDoc
+        ? (mime === 'application/pdf'
+            ? 'pdf'
+            : mime === 'application/msword'
+              ? 'doc'
+              : 'docx')
+        : undefined;
+
+      return {
+        folder: 'empleados-app', // Carpeta en Cloudinary
+        allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
+        type: 'upload', // Forzar tipo de entrega estándar
+        access_mode: 'public', // Asegurar acceso público
+        resource_type: isDoc ? 'raw' : 'image', // PDFs/Docs como raw; imágenes como image
+        public_id: `${originalName}-${timestamp}`,
+        // Para recursos raw, especificar formato asegura que la URL incluya la extensión
+        ...(format ? { format } : {}),
+      };
+    },
+  });
+} else {
+  console.warn('[Cloudinary] Sin credenciales: usando almacenamiento local en \'/uploads\'');
+  const uploadsDir = path.join(__dirname, '..', 'uploads');
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch (e) {
+    console.error('[Uploads] No se pudo crear la carpeta uploads:', e.message);
+  }
+  storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const timestamp = Date.now();
+      const safeBase = (file.originalname || 'file')
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
+        .replace(/\s+/g, '_');
+      // Mantener extensión original
+      const ext = path.extname(safeBase) || getExtFromMime(file.mimetype);
+      const base = path.basename(safeBase, path.extname(safeBase));
+      cb(null, `${base}-${timestamp}${ext}`);
+    },
+  });
+}
 
 // Configurar Multer
 const upload = multer({
@@ -77,6 +107,19 @@ const upload = multer({
     }
   }
 });
+
+// Mapear mime a extensión cuando falte
+function getExtFromMime(mime) {
+  const map = {
+    'image/jpeg': '.jpg',
+    'image/jpg': '.jpg',
+    'image/png': '.png',
+    'application/pdf': '.pdf',
+    'application/msword': '.doc',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+  };
+  return map[mime] || '';
+}
 
 // Extraer public_id a partir de la URL completa de Cloudinary
 const extractPublicIdFromUrl = (url) => {

@@ -19,7 +19,14 @@ exports.createAttendance = async (req, res) => {
     
     // Manejar la carga de archivos si hay un certificado médico
     if (req.file) {
-      justificationDocument = req.file.path; // Cloudinary devuelve la URL completa en req.file.path
+      // Si es Cloudinary, vendrá una URL completa en path; si es local, construir URL pública
+      const isHttpUrl = req.file.path && /^https?:\/\//i.test(req.file.path);
+      if (isHttpUrl) {
+        justificationDocument = req.file.path;
+      } else if (req.file.filename) {
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        justificationDocument = `${baseUrl}/uploads/${req.file.filename}`;
+      }
     }
 
     // Calcular minutos de tardanza si corresponde
@@ -234,7 +241,14 @@ exports.updateAttendance = async (req, res) => {
         }
       }
       
-      attendance.justificationDocument = req.file.path; // URL completa de Cloudinary
+      // Si es Cloudinary, vendrá una URL completa en path; si es local, construir URL pública
+      const isHttpUrl = req.file.path && /^https?:\/\//i.test(req.file.path);
+      if (isHttpUrl) {
+        attendance.justificationDocument = req.file.path;
+      } else if (req.file.filename) {
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        attendance.justificationDocument = `${baseUrl}/uploads/${req.file.filename}`;
+      }
     }
     
     // Cambio en horarios/tardanza

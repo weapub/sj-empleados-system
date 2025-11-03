@@ -36,7 +36,8 @@ const PayrollDetail = () => {
     if (!receipt) return;
     const dim = daysInMonth(receipt.period);
     const netToPay = Number(receipt.netAmount) || 0; // backend ya guarda neto final
-    const weekly = Math.round((netToPay / dim) * 7);
+    const advance = receipt.advanceRequested ? (Number(receipt.advanceAmount) || 0) : 0;
+    const weekly = Math.round(((netToPay / dim) * 7) - advance);
 
     const html = `
       <html>
@@ -101,7 +102,8 @@ const PayrollDetail = () => {
   }
 
   const netToPay = Number(receipt.netAmount) || 0;
-  const weekly = Math.round((netToPay / daysInMonth(receipt.period)) * 7);
+  const advance = receipt.advanceRequested ? (Number(receipt.advanceAmount) || 0) : 0;
+  const weekly = Math.round(((netToPay / daysInMonth(receipt.period)) * 7) - advance);
 
   return (
     <Container className="mt-4">

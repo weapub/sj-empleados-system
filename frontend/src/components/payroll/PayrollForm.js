@@ -120,8 +120,7 @@ const PayrollForm = () => {
     const dim = daysInMonth(formData.period);
     const baseNet = Number(formData.netAmount) || 0;
     const advance = formData.advanceRequested ? (Number(formData.advanceAmount) || 0) : 0;
-    const netToPay = baseNet - advance;
-    return Math.round((netToPay / dim) * 7);
+    return Math.round(((baseNet / dim) * 7) - advance);
   };
 
   return (
@@ -228,7 +227,7 @@ const PayrollForm = () => {
                   <Form.Label>Monto semanal calculado</Form.Label>
                   <Form.Control type="text" readOnly value={`$${weeklyAmount().toLocaleString('es-AR')}`} />
                 </Form.Group>
-                <small className="text-muted">Fórmula: (NETO A COBRAR - Adelanto) / días del mes × 7</small>
+                <small className="text-muted">Fórmula: (NETO A COBRAR / días del mes × 7) - Adelanto</small>
               </Col>
             </Row>
 
