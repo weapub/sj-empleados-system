@@ -37,13 +37,18 @@ const EmployeeForm = () => {
         try {
           const data = await getEmployeeById(id);
           // Formatear la fecha para el input date
-          const fechaFormateada = data.fechaContratacion 
-            ? new Date(data.fechaContratacion).toISOString().split('T')[0]
-            : '';
+          const fmt = (d) => (d ? new Date(d).toISOString().split('T')[0] : '');
+          const fechaFormateada = fmt(data.fechaContratacion);
+          const fechaIngreso = fmt(data.fechaIngreso);
+          const fechaRegistroARCA = fmt(data.fechaRegistroARCA);
+          const fechaNacimiento = fmt(data.fechaNacimiento);
           
           setFormData({
             ...data,
-            fechaContratacion: fechaFormateada
+            fechaContratacion: fechaFormateada,
+            fechaIngreso,
+            fechaRegistroARCA,
+            fechaNacimiento
           });
         } catch (err) {
           setError('Error al cargar los datos del empleado');
@@ -66,10 +71,15 @@ const EmployeeForm = () => {
     setError('');
     
     try {
+      // Sanitizar fechas vacías a null para evitar casts inválidos
+      const payload = { ...formData };
+      ['fechaContratacion','fechaIngreso','fechaRegistroARCA','fechaNacimiento'].forEach((k) => {
+        if (payload[k] === '') payload[k] = null;
+      });
       if (isEditing) {
-        await updateEmployee(id, formData);
+        await updateEmployee(id, payload);
       } else {
-        await createEmployee(formData);
+        await createEmployee(payload);
       }
       navigate('/employees');
     } catch (err) {
