@@ -1467,6 +1467,13 @@ a:hover { color: var(--primary-color); }
   white-space: normal;
   word-break: break-word;
 }
+
+/* Alinear aspecto de Attendance con Payroll: badges de Estado apiladas */
+.attendance-table td:nth-child(3) .d-flex {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
 /* Cursor de orden en cabeceras con role="button" en todas las tablas */
 .payroll-table th[role="button"],
 .attendance-table th[role="button"],
