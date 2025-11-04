@@ -65,7 +65,7 @@ const Dashboard = () => {
         <div className="section-band" />
         <div className="p-3 p-md-4">
           <h2 className="section-title font-semibold text-slate-700 inline-flex items-center gap-2">
-            <Users size={18} className="me-2" />
+            <Users size={20} className="me-2" />
             Métricas de Personal
           </h2>
           <Row className="gy-4">
@@ -82,7 +82,7 @@ const Dashboard = () => {
         <div className="section-band" />
         <div className="p-3 p-md-4">
           <h2 className="section-title font-semibold text-slate-700 inline-flex items-center gap-2">
-            <AlertTriangle size={18} className="me-2" />
+            <AlertTriangle size={20} className="me-2" />
             Gestión Disciplinaria y Administrativa
           </h2>
           <Row className="gy-4">
@@ -98,7 +98,7 @@ const Dashboard = () => {
       <Card className="quick-actions-card shadow-sm border border-slate-200/70 rounded-xl">
         <Card.Header className="bg-white rounded-t-xl">
           <h3 className="mb-0 font-semibold text-slate-700 inline-flex items-center gap-2">
-            <Users size={18} />
+            <Users size={20} />
             <span>Acciones Rápidas</span>
           </h3>
         </Card.Header>
@@ -106,25 +106,25 @@ const Dashboard = () => {
           <Row className="gy-3">
             <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/employees/new" variant="primary" className="w-100 py-3 rounded-md shadow-sm">
-                <UserCheck size={18} className="me-2" />
+                <UserCheck size={20} className="me-2" />
                 Nuevo Empleado
               </Button>
             </Col>
             <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/attendance" variant="success" className="w-100 py-3 rounded-md shadow-sm">
-                <Clock size={18} className="me-2" />
+                <Clock size={20} className="me-2" />
                 Registrar Asistencia
               </Button>
             </Col>
             <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/disciplinary/new" variant="warning" className="w-100 py-3 rounded-md shadow-sm">
-                <AlertTriangle size={18} className="me-2" />
+                <AlertTriangle size={20} className="me-2" />
                 Nueva Medida Disciplinaria
               </Button>
             </Col>
             <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/payroll/new" variant="info" className="w-100 py-3 rounded-md shadow-sm bg-gradient-to-br from-cyan-600 to-cyan-700 text-white border-0">
-                <Receipt size={18} className="me-2" />
+                <Receipt size={20} className="me-2" />
                 Nuevo Recibo
               </Button>
             </Col>
