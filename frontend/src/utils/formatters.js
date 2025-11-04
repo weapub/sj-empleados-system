@@ -11,3 +11,9 @@ export const formatDate = (dateString) => {
     year: 'numeric'
   });
 };
+
+// Formateador de moneda consistente para ARS
+export const formatCurrency = (value) => {
+  const num = Number(value || 0);
+  return `$${num.toLocaleString('es-AR')}`;
+};

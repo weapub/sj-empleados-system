@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Attendance = require('../models/Attendance');
 const Disciplinary = require('../models/Disciplinary');
+const Employee = require('../models/Employee');
 const { cloudinary, extractPublicIdFromUrl } = require('../utils/cloudinary');
 const https = require('https');
 const http = require('http');
@@ -126,6 +127,47 @@ exports.testTwilioWhatsApp = async (req, res) => {
     return res.json({ msg: 'WhatsApp enviado', result });
   } catch (e) {
     console.error('[Admin] testTwilioWhatsApp error:', e);
+    return res.status(500).json({ msg: 'Error interno', error: e.message });
+  }
+};
+
+// Enviar WhatsApp de prueba a todos los empleados con teléfono
+exports.broadcastTwilioWhatsApp = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ msg: 'Acceso denegado. Solo admin.' });
+    }
+
+    const { body } = req.body || {};
+    const text = body || 'Prueba de WhatsApp masivo desde SJ-Empleados (Twilio)';
+
+    // Obtener empleados con teléfono cargado
+    const employees = await Employee.find({ telefono: { $exists: true, $ne: null, $ne: '' } }).select('nombre apellido telefono');
+    const results = [];
+    let sent = 0;
+    let errors = 0;
+
+    for (const emp of employees) {
+      try {
+        const result = await sendWhatsApp(emp.telefono, text);
+        if (result?.sid) {
+          sent += 1;
+          results.push({ empleado: `${emp.nombre} ${emp.apellido}`, telefono: emp.telefono, sid: result.sid });
+        } else if (result?.mock) {
+          results.push({ empleado: `${emp.nombre} ${emp.apellido}`, telefono: emp.telefono, mock: true });
+        } else {
+          errors += 1;
+          results.push({ empleado: `${emp.nombre} ${emp.apellido}`, telefono: emp.telefono, error: result?.error || 'unknown_error' });
+        }
+      } catch (e) {
+        errors += 1;
+        results.push({ empleado: `${emp.nombre} ${emp.apellido}`, telefono: emp.telefono, error: e.message });
+      }
+    }
+
+    return res.json({ msg: 'Broadcast ejecutado', total: employees.length, sent, errors, results });
+  } catch (e) {
+    console.error('[Admin] broadcastTwilioWhatsApp error:', e);
     return res.status(500).json({ msg: 'Error interno', error: e.message });
   }
 };

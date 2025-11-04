@@ -9,4 +9,7 @@ router.post('/migrate/raw-formats', auth, adminController.migrateRawFormats);
 // Endpoint de prueba Twilio WhatsApp (solo admin)
 router.post('/twilio/test-whatsapp', auth, adminController.testTwilioWhatsApp);
 
+// Endpoint de prueba Twilio WhatsApp masivo (solo admin)
+router.post('/twilio/test-whatsapp-all', auth, adminController.broadcastTwilioWhatsApp);
+
 module.exports = router;

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Normalizar base URL: quitar barras finales y sufijo /api si existe,
 // y asegurar que todas las llamadas usen siempre /api
-const RAW_BASE = process.env.REACT_APP_API_URL || 'https://sj-empleados-system.onrender.com';
+const RAW_BASE = import.meta.env.VITE_API_URL || 'https://sj-empleados-system.onrender.com';
 const TRIMMED = String(RAW_BASE).replace(/\/+$/, '');
 const BASE_NO_API = TRIMMED.replace(/\/api\/?$/i, '');
 const API_URL = `${BASE_NO_API}/api`;

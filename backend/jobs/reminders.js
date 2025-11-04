@@ -5,6 +5,18 @@ const Employee = require('../models/Employee');
 const { sendWhatsApp } = require('../utils/whatsapp');
 const EmployeeEvent = require('../models/EmployeeEvent');
 
+// Configuración por entorno
+const REMINDERS_CRON = process.env.REMINDERS_CRON || '0 8 * * *';
+const REMINDERS_ONLY_ACTIVE = String(process.env.REMINDERS_ONLY_ACTIVE || 'true').toLowerCase() !== 'false';
+const REMINDERS_DEPARTAMENTO = (process.env.REMINDERS_DEPARTAMENTO || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+const REMINDERS_SUCURSAL = (process.env.REMINDERS_SUCURSAL || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
@@ -12,23 +24,23 @@ function isSameDay(a, b) {
 async function notifyAndMark(attendance, kind, msg) {
   try {
     const employee = await Employee.findById(attendance.employee);
-    if (employee && employee.telefono) {
+    if (employee && employee.telefono && matchesFilters(employee)) {
       await sendWhatsApp(employee.telefono, msg);
+      // Registrar evento automático
+      const ev = new EmployeeEvent({
+        employee: attendance.employee,
+        type: 'auto_whatsapp_reminder',
+        message: msg,
+        changes: [{ field: `attendance.${kind}`, from: false, to: true }]
+      });
+      await ev.save();
+      // Marcar bandera correspondiente
+      if (kind === 'certificateReminderSent') attendance.certificateReminderSent = true;
+      if (kind === 'vacationStartReminderSent') attendance.vacationStartReminderSent = true;
+      if (kind === 'returnToWorkReminderSent') attendance.returnToWorkReminderSent = true;
+      attendance.updatedAt = Date.now();
+      await attendance.save();
     }
-    // Registrar evento automático
-    const ev = new EmployeeEvent({
-      employee: attendance.employee,
-      type: 'auto_whatsapp_reminder',
-      message: msg,
-      changes: [{ field: `attendance.${kind}`, from: false, to: true }]
-    });
-    await ev.save();
-    // Marcar bandera correspondiente
-    if (kind === 'certificateReminderSent') attendance.certificateReminderSent = true;
-    if (kind === 'vacationStartReminderSent') attendance.vacationStartReminderSent = true;
-    if (kind === 'returnToWorkReminderSent') attendance.returnToWorkReminderSent = true;
-    attendance.updatedAt = Date.now();
-    await attendance.save();
   } catch (err) {
     console.error('Error en notificación automática:', err.message);
   }
@@ -37,19 +49,19 @@ async function notifyAndMark(attendance, kind, msg) {
 async function notifyAndMarkDisciplinary(disciplinary, msg) {
   try {
     const employee = await Employee.findById(disciplinary.employee);
-    if (employee && employee.telefono) {
+    if (employee && employee.telefono && matchesFilters(employee)) {
       await sendWhatsApp(employee.telefono, msg);
+      const ev = new EmployeeEvent({
+        employee: disciplinary.employee,
+        type: 'auto_whatsapp_reminder',
+        message: msg,
+        changes: [{ field: 'disciplinary.returnToWorkReminderSent', from: false, to: true }]
+      });
+      await ev.save();
+      disciplinary.returnToWorkReminderSent = true;
+      disciplinary.updatedAt = Date.now();
+      await disciplinary.save();
     }
-    const ev = new EmployeeEvent({
-      employee: disciplinary.employee,
-      type: 'auto_whatsapp_reminder',
-      message: msg,
-      changes: [{ field: 'disciplinary.returnToWorkReminderSent', from: false, to: true }]
-    });
-    await ev.save();
-    disciplinary.returnToWorkReminderSent = true;
-    disciplinary.updatedAt = Date.now();
-    await disciplinary.save();
   } catch (err) {
     console.error('Error en notificación automática (disciplinary):', err.message);
   }
@@ -106,12 +118,35 @@ async function runDailyReminders() {
 }
 
 function start() {
-  // Ejecutar todos los días a las 08:00
-  cron.schedule('0 8 * * *', async () => {
+  // Ejecutar según cron configurado
+  cron.schedule(REMINDERS_CRON, async () => {
     console.log('[CRON] Ejecutando recordatorios automáticos');
     await runDailyReminders();
   });
-  console.log('[CRON] Scheduler de recordatorios iniciado');
+  console.log(
+    '[CRON] Scheduler de recordatorios iniciado',
+    JSON.stringify({
+      cron: REMINDERS_CRON,
+      onlyActive: REMINDERS_ONLY_ACTIVE,
+      departamento: REMINDERS_DEPARTAMENTO,
+      sucursal: REMINDERS_SUCURSAL,
+    })
+  );
 }
 
 module.exports = { start };
+
+// Helpers
+function matchesFilters(employee) {
+  if (!employee) return false;
+  if (REMINDERS_ONLY_ACTIVE && employee.activo === false) return false;
+  if (REMINDERS_DEPARTAMENTO.length > 0) {
+    const dept = (employee.departamento || '').trim();
+    if (!REMINDERS_DEPARTAMENTO.includes(dept)) return false;
+  }
+  if (REMINDERS_SUCURSAL.length > 0) {
+    const suc = (employee.sucursal || '').trim();
+    if (!REMINDERS_SUCURSAL.includes(suc)) return false;
+  }
+  return true;
+}

@@ -1,34 +1,437 @@
-/* Variables CSS para tema consistente */
+/* Import tipografía Inter para mayor legibilidad */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Variables CSS para tema consistente (paleta clara y amigable) */
 :root {
-  /* Light theme */
-  --primary-color: #2563eb;
-  --primary-dark: #1d4ed8;
-  --secondary-color: #64748b;
-  --success-color: #059669;
-  --warning-color: #d97706;
-  --danger-color: #dc2626;
-  --light-bg: #f8fafc;
+  --primary-color: #3b82f6; /* blue-500 */
+  --primary-dark: #1d4ed8; /* blue-700 */
+  --accent-color: #10b981; /* emerald-500 */
+  --secondary-color: #64748b; /* slate-500 */
+  --success-color: #16a34a; /* green-600 */
+  --warning-color: #f59e0b; /* amber-500 */
+  --danger-color: #ef4444; /* red-500 */
+  --light-bg: #f8fafc; /* fondo claro y suave */
   --card-bg: #ffffff;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
+  --surface-soft: #f6f7fb; /* listas/tablas suaves */
+  --text-primary: #0f172a; /* contraste alto legible */
+  --text-secondary: #334155;
   --muted-color: #64748b;
   --placeholder-color: #94a3b8;
-  --border-color: #e2e8f0;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-color: #e5e7eb; /* gray-200 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 18px 34px rgba(0, 0, 0, 0.10);
   --border-radius: 0.75rem;
   --border-radius-sm: 0.5rem;
 }
+
+/* Soft reset base */
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; }
 
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, var(--light-bg) 0%, #e2e8f0 100%);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Fondo más limpio y menos grisáceo */
+  background: linear-gradient(135deg, #ffffff 0%, var(--light-bg) 100%);
+  /* Variables tipográficas */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-hero: 'Inter', 'Montserrat', sans-serif;
+  --font-alt: 'Inter', 'Exo 2', sans-serif;
+
+  font-family: var(--font-body);
   color: var(--text-primary);
 }
+
+/* Tipografía base más legible */
+body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tema inspirado en dSign: paleta indigo/fucsia y glassmorphism */
+.theme-dsign {
+  /* Overrides de variables para tema dSign */
+  --primary-color: #7c3aed; /* Violet */
+  --primary-dark: #6d28d9; /* más intenso */
+  --accent-color: #a855f7; /* Fucsia/Violeta */
+  --secondary-color: #64748b; /* Gris neutro */
+  --light-bg: #f1f5f9; /* Fondo tenue */
+  --card-bg: rgba(255,255,255,0.68);
+  --border-color: rgba(124,58,237,0.22);
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --shadow-md: 0 10px 24px rgba(124,58,237,0.12);
+  --shadow-lg: 0 22px 40px rgba(124,58,237,0.18);
+/* Tipografías dSign */
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Montserrat', 'League Spartan', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-hero: 'Black Han Sans', 'Montserrat', sans-serif;
+  --font-alt: 'Raleway', 'Exo 2', sans-serif;
+  /* Paleta inspirada en Vite template */
+  --vite-link: #7c3aed;
+  --vite-link-hover: #6d28d9;
+  --vite-bg-dark: #242424;
+  --vite-bg-light: #ffffff;
+  --vite-text-dark: rgba(255, 255, 255, 0.87);
+  --vite-text-light: #213547;
+}
+
+/* Estilo base inspirado en app de 5173 */
+/* No alteramos layout del body (sin flex centering), solo colores y elementos comunes */
+html, body {
+  color-scheme: light dark;
+}
+
+a {
+  font-weight: 500;
+  color: var(--vite-link);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--vite-link-hover);
+}
+
+/* Botones minimalistas con borde y radio 8px */
+button,
+.btn {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  transition: border-color 0.25s;
+}
+
+/* Asegurar texto blanco en botones primarios (Bootstrap) */
+.btn-primary,
+.btn.btn-primary {
+  color: #fff !important;
+}
+
+/* Texto blanco en otras variantes de botón para consistencia visual */
+.btn-success,
+.btn.btn-success,
+.btn-info,
+.btn.btn-info,
+.btn-warning,
+.btn.btn-warning,
+.btn-danger,
+.btn.btn-danger,
+.btn-secondary,
+.btn.btn-secondary {
+  color: #fff !important;
+}
+button:hover,
+.btn:hover {
+  border-color: var(--vite-link);
+}
+button:focus,
+button:focus-visible,
+.btn:focus {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Colores de fondo y texto según esquema preferido */
+@media (prefers-color-scheme: light) {
+  body {
+    color: var(--vite-text-light);
+    background-color: var(--vite-bg-light);
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button,
+  .btn {
+    background-color: #f9f9f9;
+    color: var(--vite-text-light);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    color: var(--vite-text-dark);
+    background-color: var(--vite-bg-dark);
+  }
+  button,
+  .btn {
+    background-color: #1a1a1a;
+    color: var(--vite-text-dark);
+  }
+}
+
+/* Base clara por defecto (legible y amigable) */
+:root { color-scheme: light; }
+body {
+  color: var(--text-primary);
+  background-color: var(--light-bg);
+}
+button,
+.btn {
+  background-color: #ffffff;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+a:hover { color: var(--primary-color); }
+
+/* Cards con padding similar al template */
+.card {
+  padding: 2em;
+}
+
+.theme-dsign .navbar {
+  background: #ffffff !important;
+  backdrop-filter: none;
+  border: none !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+.theme-dsign .navbar-brand {
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  font-family: var(--font-heading);
+}
+
+.theme-dsign .card:not(.balance-card) {
+  background: #ffffff;
+  backdrop-filter: none;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.theme-dsign .card:not(.balance-card):hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+.theme-dsign .card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-dsign .status-badge {
+  border-color: var(--border-color);
+}
+
+.theme-dsign .badge,
+.theme-dsign .status-badge {
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.theme-dsign .navbar-nav .nav-link.active {
+  background-color: rgba(99, 102, 241, 0.16);
+  color: var(--primary-color) !important;
+}
+
+.theme-dsign .metric-icon-wrapper {
+  border: 2px solid rgba(99, 102, 241, 0.25);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px rgba(79,70,229,0.12);
+  position: relative;
+}
+
+.theme-dsign .metric-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.18), transparent 65%);
+  filter: none;
+}
+
+.theme-dsign .metric-delta {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  background-color: rgba(255,255,255,0.75);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 20px rgba(79,70,229,0.14);
+}
+.theme-dsign .metric-delta.delta-up { color: #16a34a; }
+.theme-dsign .metric-delta.delta-down { color: #dc2626; }
+
+/* Headers tipo hero con acento y blobs sutiles */
+.theme-dsign .page-title, .theme-dsign .section-title {
+  position: relative;
+  font-family: var(--font-heading);
+}
+.theme-dsign .page-title::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -24px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.18), transparent 60%);
+  filter: none;
+  z-index: -1;
+}
+.theme-dsign .section-title {
+  background-image: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+  background-position: 0 100%;
+}
+
+/* Chips mejorados */
+.theme-dsign .attendance-table .employee-name-chip {
+  background-color: rgba(238, 242, 255, 0.9);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
+}
+
+/* Formularios glass y foco unificado */
+.theme-dsign .form-control,
+.theme-dsign .form-select {
+  background-color: #ffffff;
+  backdrop-filter: none;
+  border: 1px solid var(--border-color);
+}
+.theme-dsign .form-control:focus,
+.theme-dsign .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
+
+/* Botones pill con gradiente inspirados en dSign */
+.theme-dsign .btn {
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease;
+}
+
+.theme-dsign .btn-primary {
+  background-image: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  border: 1px solid var(--border-color);
+  color: #fff;
+}
+
+.theme-dsign .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-dsign .btn-outline-primary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+}
+
+.theme-dsign .btn-outline-primary:hover {
+  background-color: rgba(99, 102, 241, 0.12);
+}
+/* Intensidad más marcada para dSign */
+.theme-dsign .navbar {
+  background: transparent !important;
+  backdrop-filter: none;
+  border: 1px solid #ddd !important;
+  box-shadow: none !important;
+}
+.theme-dsign .navbar-brand {
+  text-shadow: 0 1px 6px rgba(79, 70, 229, 0.18);
+}
+.theme-dsign .navbar-nav .nav-link:hover,
+.theme-dsign .navbar-nav .nav-link.active {
+  background-color: rgba(99, 102, 241, 0.16);
+  color: var(--primary-color) !important;
+}
+.theme-dsign .badge,
+.theme-dsign .status-badge {
+  box-shadow: 0 3px 12px rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.42);
+}
+.theme-dsign .attendance-table .employee-name-chip {
+  background-color: transparent; /* corregido: sin fondo */
+  border: none; /* corregido: sin borde */
+  box-shadow: none; /* corregido: sin sombra */
+}
+.theme-dsign .metric-icon-wrapper {
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 20px rgba(79, 70, 229, 0.14);
+}
+.theme-dsign .row.gy-4 {
+  background: transparent; /* sin fondo verde */
+  border: none; /* sin borde temático */
+  border-radius: 0; /* neutral */
+  padding: 0; /* sin padding extra del contenedor */
+  box-shadow: none; /* sin sombra verde */
+}
+.theme-dsign .row.gy-4 > [class*="col"] .card {
+  border-color: var(--border-color); /* borde neutro estándar */
+}
+.theme-dsign .metric-icon-wrapper::before {
+  inset: -8px;
+  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.2), transparent 65%);
+  filter: none;
+}
+.theme-dsign .metric-delta {
+  background-color: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.14);
+}
+.theme-dsign .page-title::before {
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.2), transparent 60%);
+  filter: none;
+}
+.theme-dsign .section-title {
+  background-size: 100% 3px;
+}
+.theme-dsign .form-control,
+.theme-dsign .form-select {
+  background-color: #ffffff;
+  backdrop-filter: none;
+}
+.theme-dsign .form-control:focus,
+.theme-dsign .form-select:focus {
+  box-shadow: 0 0 0 0.22rem rgba(99, 102, 241, 0.28);
+}
+.theme-dsign .btn-primary {
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.22), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+.theme-dsign .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.28), 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Suavizado adicional en pantallas pequeñas y accesibilidad */
+@media (max-width: 640px) {
+  .theme-dsign .navbar { backdrop-filter: none; box-shadow: 0 3px 10px rgba(79, 70, 229, 0.09); }
+  .theme-dsign .metric-icon-wrapper { box-shadow: inset 0 1px 2px rgba(0,0,0,0.05), 0 6px 14px rgba(79,70,229,0.12); }
+  .theme-dsign .metric-icon-wrapper::before { filter: none; }
+  .theme-dsign .page-title::before { filter: none; width: 170px; height: 170px; }
+  .theme-dsign .badge, .theme-dsign .status-badge { box-shadow: none; border-color: rgba(99,102,241,0.35); }
+  .theme-dsign .btn-primary { box-shadow: 0 6px 16px rgba(79,70,229,0.18), 0 2px 6px rgba(0,0,0,0.06); }
+  .theme-dsign .page-title { font-size: 1.25rem; }
+  .theme-dsign .section-title { font-size: 1rem; }
+  .theme-dsign .card-header { font-size: 1.05rem; padding: 1rem 1.25rem; }
+  .theme-dsign .btn { padding: 0.45rem 0.9rem !important; }
+  .container { padding: 1.25rem 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-dsign .btn-primary:hover { transform: none; }
+}
+
+.app-shell {
+  display: flex;
+  min-height: calc(100vh - 56px); /* restando altura aproximada del navbar */
+}
+
+
+.app-content { flex: 1; }
 
 .container {
   flex: 1;
@@ -39,46 +442,212 @@
 
 .navbar {
   margin-bottom: 0;
-  box-shadow: var(--shadow-md);
-  background: linear-gradient(135deg, #ffffff 0%, var(--light-bg) 100%) !important;
+  box-shadow: var(--shadow-sm);
+  background: #ffffff !important;
   border-bottom: 1px solid var(--border-color);
 }
 
 .navbar .navbar-brand,
 .navbar .nav-link {
-  color: var(--text-secondary) !important;
+  color: var(--text-secondary) !important; /* valor por defecto */
 }
 
 .navbar .navbar-brand { color: var(--text-primary) !important; }
 .navbar .nav-link:hover { color: var(--text-primary) !important; }
 
+/* Navbar estilo panel oscuro dentro de theme-dsign */
+.theme-dsign .navbar .navbar-brand,
+.theme-dsign .navbar .nav-link {
+  color: var(--text-primary) !important;
+}
+
+.theme-dsign .navbar-nav .nav-link:hover {
+  background-color: rgba(17, 24, 39, 0.06) !important; /* gris muy tenue */
+  color: var(--text-primary) !important;
+}
+
+/* Collapse móvil: coherente con panel oscuro */
+.theme-dsign .navbar-collapse {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Fondo de página claro para theme-dsign */
+.App.theme-dsign {
+  background-color: #f7f8fc !important;
+}
+
+/* Chips de delta de métricas más sutiles */
+.theme-dsign .metric-delta {
+  background-color: rgba(16, 185, 129, 0.10) !important; /* verde tenue */
+  border: 1px solid rgba(16, 185, 129, 0.20) !important;
+  color: #065f46 !important;
+}
+.theme-dsign .metric-delta.negative {
+  background-color: rgba(239, 68, 68, 0.10) !important; /* rojo tenue */
+  border: 1px solid rgba(239, 68, 68, 0.20) !important;
+  color: #7f1d1d !important;
+}
+
+/* Outline buttons: respetar contorneado y contraste en theme-dsign */
+.theme-dsign .btn-outline-dark {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+.theme-dsign .btn-outline-dark:hover {
+  background-color: rgba(17, 24, 39, 0.06) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Botón primario neutro dentro de theme-dsign */
+.theme-dsign .btn-primary {
+  background-color: #374151 !important; /* slate-700 */
+  border-color: #374151 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.theme-dsign .btn-primary:hover {
+  background-color: #1f2937 !important; /* slate-800 */
+  border-color: #1f2937 !important;
+}
+
+.theme-dsign .btn-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(55, 65, 81, 0.35) !important; /* slate-700 ring */
+}
+
+.theme-dsign .btn-primary:disabled,
+.theme-dsign .btn-primary.disabled {
+  background-color: #9ca3af !important; /* gray-400 */
+  border-color: #9ca3af !important;
+  color: #ffffff !important;
+}
+
+/* Botón secundario neutro */
+.theme-dsign .btn-secondary {
+  background-color: #6b7280 !important; /* slate-500 */
+  border-color: #6b7280 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.theme-dsign .btn-secondary:hover {
+  background-color: #4b5563 !important; /* slate-600 */
+  border-color: #4b5563 !important;
+}
+
+.theme-dsign .btn-secondary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(75, 85, 99, 0.35) !important; /* slate-600 ring */
+}
+
+.theme-dsign .btn-secondary:disabled,
+.theme-dsign .btn-secondary.disabled {
+  background-color: #9ca3af !important; /* gray-400 */
+  border-color: #9ca3af !important;
+  color: #ffffff !important;
+}
+
+/* Botón de éxito desaturado */
+.theme-dsign .btn-success {
+  background-color: #2f855a !important; /* muted verde */
+  border-color: #2f855a !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.theme-dsign .btn-success:hover {
+  background-color: #276749 !important; /* un tono más profundo */
+  border-color: #276749 !important;
+}
+
+.theme-dsign .btn-success:focus {
+  box-shadow: 0 0 0 0.2rem rgba(47, 133, 90, 0.35) !important; /* ring verde suave */
+}
+
+.theme-dsign .btn-success:disabled,
+.theme-dsign .btn-success.disabled {
+  background-color: #86efac !important; /* green-300 tenue */
+  border-color: #86efac !important;
+  color: #064e3b !important; /* readable sobre verde claro */
+}
+
 /* Mejoras para cards */
 .card {
-  background: var(--card-bg);
+  background: #ffffff;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
   overflow: hidden;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .card-header {
-  background: linear-gradient(135deg, rgba(124,58,237,0.95) 0%, rgba(96,165,250,0.95) 100%);
-  color: white;
-  border-bottom: none;
+  /* Header base; el tema controla el color */
+  background: var(--card-header-bg);
+  color: var(--card-header-text);
+  border-bottom: 1px solid var(--border-color);
   padding: 1.25rem 1.5rem;
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  font-size: 1.15rem;
+  font-family: var(--font-heading);
 }
 
 .card-body {
   padding: 1.5rem;
 }
+
+/* Badges de estado reutilizables */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
+}
+
+.status-success { background: #dcfce7; color: #166534; border-color: #86efac; }
+.status-warning { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.status-info { background: #e0f2fe; color: #0c4a6e; border-color: #93c5fd; }
+.status-danger { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+/* Badges estilo "soft" similares al screenshot */
+.badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  border: 1px solid var(--border-color);
+}
+.badge-soft .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.badge-soft-success { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.badge-soft-success .dot { background: #10b981; }
+.badge-soft-warning { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+.badge-soft-warning .dot { background: #f59e0b; }
+.badge-soft-info { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+.badge-soft-info .dot { background: #3b82f6; }
+.badge-soft-primary { background: #f5f3ff; color: #4c1d95; border-color: #ddd6fe; }
+.badge-soft-primary .dot { background: #7c3aed; }
+/* Variante adicional para estados negativos */
+.badge-soft-danger { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+.badge-soft-danger .dot { background: #ef4444; }
 
 /* Mejoras para botones */
 .btn {
@@ -88,7 +657,7 @@
   font-weight: 500;
   padding: 0.625rem 1.25rem;
   transition: all 0.2s ease;
-  border: none;
+  border: 1px solid var(--border-color);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -123,7 +692,7 @@
 }
 
 .btn-outline-primary {
-  border: 2px solid var(--primary-color);
+  border: 1px solid var(--primary-color);
   color: var(--primary-color);
   background: transparent;
 }
@@ -143,7 +712,7 @@
 }
 
 .table th {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  background: #f1f5f9;
   color: var(--text-primary);
   font-weight: 600;
   border-bottom: 2px solid var(--border-color);
@@ -179,7 +748,13 @@
 
 .form-control:focus, .form-select:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* Neutralizar gradiente fuerte en PageHeader icon */
+.page-header .inline-flex.bg-gradient-to-br {
+  background-image: none !important;
+  background-color: var(--primary-color) !important;
 }
 
 .form-label {
@@ -231,11 +806,31 @@
 
 .section-title {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.4rem;
+  /* Subrayado con gradiente para coherencia visual */
+  background-image: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+  background-position: 0 100%;
+}
+
+/* Contenedor de sección con banda superior morada como en el screenshot */
+.section-box {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+.section-box .section-band {
+  height: 10px;
+  background: linear-gradient(90deg, var(--primary-dark), var(--accent-color));
+}
+.section-box .section-body {
+  padding: 1rem;
 }
 
 /* Spinner mejorado */
@@ -265,12 +860,13 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  /* Círculo más claro y con aro de acento */
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(124, 58, 237, 0.25);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.06), var(--shadow-sm);
 }
 
 .metric-overlay {
@@ -279,8 +875,28 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(241,245,249,0.35) 0%, rgba(241,245,249,0.2) 100%);
   pointer-events: none;
+}
+
+/* Delta pill estilo dashboard de la imagen */
+.metric-delta {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  border: 1px solid var(--border-color);
+}
+.metric-delta.delta-up {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+.metric-delta.delta-down {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
 }
 
 .quick-actions-card {
@@ -336,16 +952,16 @@
 
 /* Balance card specific styles */
 .balance-card {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
   border: none;
   color: white;
-  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.22);
   transition: all 0.3s ease;
 }
 
 .balance-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 35px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.35);
 }
 
 .balance-card .card-body {
@@ -396,7 +1012,7 @@
 @media (min-width: 769px) {
   /* Ampliar layout general en escritorio */
   .container {
-    max-width: 1920px;
+    max-width: 1600px; /* ampliar para mejor acomodación de elementos */
   }
 
   /* Permitir ancho fluido de tablas en escritorio */
@@ -417,6 +1033,33 @@
     font-size: 0.92rem;
     word-break: break-word;
     white-space: normal;
+  }
+
+  /* Ajuste de padding en primeras columnas para mejorar equilibrio visual */
+  .attendance-table th:first-child,
+  .attendance-table td:first-child,
+  .attendance-table th:nth-child(2),
+  .attendance-table td:nth-child(2) {
+    padding-left: 1.6rem;
+    padding-right: 0.4rem;
+  }
+
+  .employee-table th:first-child,
+  .employee-table td:first-child {
+    padding-left: 1.6rem;
+    padding-right: 0.4rem;
+  }
+
+  .disciplinary-table th:first-child,
+  .disciplinary-table td:first-child {
+    padding-left: 1.6rem;
+    padding-right: 0.4rem;
+  }
+
+  .payroll-table th:first-child,
+  .payroll-table td:first-child {
+    padding-left: 1.6rem;
+    padding-right: 0.4rem;
   }
 }
 
@@ -789,38 +1432,212 @@
   border-color: var(--primary-color);
   box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
 }
-/* Payroll desktop table improvements */
-.payroll-table {
+/* Estilo unificado de columnas para tablas: Payroll, Attendance, Disciplinary y Employees */
+.payroll-table,
+.attendance-table,
+.disciplinary-table,
+.employee-table {
   min-width: auto; /* Evitar scroll horizontal forzado */
   width: 100%;
 }
 
-.payroll-table td, .payroll-table th {
+.payroll-table td, .payroll-table th,
+.attendance-table td, .attendance-table th,
+.disciplinary-table td, .disciplinary-table th,
+.employee-table td, .employee-table th {
   vertical-align: middle;
 }
 
-.payroll-table .cell-stacked > div {
+.payroll-table .cell-stacked > div,
+.attendance-table .cell-stacked > div,
+.disciplinary-table .cell-stacked > div,
+.employee-table .cell-stacked > div {
   margin-bottom: 0.25rem;
 }
 
-.payroll-table .text-truncate {
-  max-width: 220px;
+.payroll-table .text-truncate,
+.attendance-table .text-truncate,
+.disciplinary-table .text-truncate,
+.employee-table .text-truncate {
+  max-width: 220px; /* mismo ancho de truncado que Payroll */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Clamp de 2 líneas para nombres largos */
+  -webkit-line-clamp: 2; /* Clamp de 2 líneas para textos largos */
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: normal;
   word-break: break-word;
 }
-/* Sortable header cursor for payroll table */
-.payroll-table th[role="button"] {
+/* Cursor de orden en cabeceras con role="button" en todas las tablas */
+.payroll-table th[role="button"],
+.attendance-table th[role="button"],
+.disciplinary-table th[role="button"],
+.employee-table th[role="button"] {
   cursor: pointer;
 }
-/* Attendance desktop table improvements */
-.attendance-table {
-  min-width: auto; /* Evitar scroll horizontal forzado */
-  width: 100%;
+ 
+/* =============================================
+   Soft Glass Dashboard Theme (Soft UI + Glass)
+   ============================================= */
+/* Paleta y tokens suaves para el tema */
+.theme-soft-glass {
+  --primary-color: #60a5fa; /* sky-400 */
+  --accent-color: #a7f3d0; /* emerald-200 */
+  --success-color: #10b981; /* emerald-500 */
+  --warning-color: #f59e0b; /* amber-500 */
+  --danger-color: #ef4444;  /* red-500 */
+  --text-primary: #0f172a;  /* slate-900 */
+  --text-secondary: #334155;/* slate-700 */
+  --text-muted: #64748b;    /* slate-500 */
+  --muted-color: #94a3b8;   /* slate-400 */
+  --light-bg: #f8fafc;      /* slate-50 */
+  --card-bg: #ffffff;
+  --surface-soft: rgba(255,255,255,0.6);
+  --border-color: #e5e7eb;  /* gray-200 */
+  --shadow-sm: 0 6px 18px rgba(15,23,42,0.06);
+  --shadow-md: 0 12px 28px rgba(15,23,42,0.08);
+  --shadow-lg: 0 20px 40px rgba(15,23,42,0.10);
+  --border-radius-sm: 10px;
+  --border-radius: 16px;    /* rounded-2xl aprox */
+  --border-radius-lg: 20px;
 }
+
+/* Fondo general con gradiente sutil */
+.App.theme-soft-glass {
+  background-image: linear-gradient(135deg, #f8fafc 0%, #ffffff 60%, #f1f5f9 100%);
+}
+
+/* Navbar con efecto glass leve */
+.theme-soft-glass .navbar {
+  background: rgba(255,255,255,0.75) !important;
+  backdrop-filter: saturate(160%) blur(8px);
+  border-bottom: 1px solid rgba(229,231,235,0.7);
+  box-shadow: var(--shadow-sm);
+}
+.theme-soft-glass .navbar .navbar-brand,
+.theme-soft-glass .navbar .nav-link {
+  color: var(--text-secondary) !important;
+}
+.theme-soft-glass .navbar .nav-link:hover {
+  color: var(--text-primary) !important;
+  background-color: rgba(99,102,241,0.10);
+  border-radius: 999px;
+}
+
+/* Cards blancas con borde tenue y sombra suave */
+.theme-soft-glass .card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+.theme-soft-glass .balance-card {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+.theme-soft-glass .balance-card .card-header,
+.theme-soft-glass .balance-card .card-body {
+  background: transparent !important;
+}
+.theme-soft-glass .card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+.theme-soft-glass .card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Botones: base neutra y primario con gradiente pastel */
+.theme-soft-glass .btn {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  color: var(--text-primary);
+  box-shadow: 0 2px 6px rgba(15,23,42,0.06);
+}
+.theme-soft-glass .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(15,23,42,0.08);
+}
+.theme-soft-glass .btn-primary {
+  background-image: linear-gradient(135deg, #93c5fd 0%, #818cf8 100%);
+  border-color: transparent;
+  color: #fff;
+}
+.theme-soft-glass .btn-outline-primary {
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  background-color: transparent;
+}
+.theme-soft-glass .btn-outline-primary:hover {
+  background-color: rgba(96,165,250,0.12);
+}
+
+/* KPIs compactos y suaves */
+.theme-soft-glass .kpi-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  background-color: #fff;
+}
+.theme-soft-glass .kpi-title { color: var(--text-muted); }
+.theme-soft-glass .kpi-value { color: var(--text-primary); font-weight: 700; }
+.theme-soft-glass .kpi-delta.up { color: var(--success-color); }
+.theme-soft-glass .kpi-delta.down { color: var(--danger-color); }
+
+/* Modales con glassmorphism */
+.theme-soft-glass .modal-content {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: saturate(180%) blur(10px);
+  border: 1px solid rgba(229,231,235,0.6);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--border-radius);
+}
+.theme-soft-glass .modal-header,
+.theme-soft-glass .modal-footer {
+  border-color: rgba(229,231,235,0.7);
+}
+.theme-soft-glass .modal-backdrop.show {
+  backdrop-filter: blur(3px);
+  background-color: rgba(15,23,42,0.25);
+}
+
+/* Focus ring suave para formularios */
+.theme-soft-glass .form-control:focus,
+.theme-soft-glass .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
+}
+
+/* Secciones con banda tenue */
+.theme-soft-glass .section-box { border: 1px solid var(--border-color); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); background: #fff; }
+.theme-soft-glass .section-band { height: 6px; border-top-left-radius: var(--border-radius); border-top-right-radius: var(--border-radius); background-image: linear-gradient(90deg, #93c5fd, #a7f3d0); opacity: 0.7; }
+
+/* Tablas y badges suaves */
+.theme-soft-glass .table-responsive {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.theme-soft-glass .table thead th {
+  background-color: #f1f5f9;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+.theme-soft-glass .table tbody tr:hover {
+  background-color: rgba(148, 163, 184, 0.10);
+}
+.theme-soft-glass .badge {
+  border: 1px solid rgba(96,165,250,0.30);
+  box-shadow: 0 2px 8px rgba(96,165,250,0.15);
+  border-radius: 999px;
+}
+.theme-soft-glass .badge.bg-primary { background-color: rgba(96,165,250,0.15) !important; color: var(--text-primary); }
+.theme-soft-glass .badge.bg-success { background-color: rgba(16,185,129,0.15) !important; color: var(--text-primary); }
+.theme-soft-glass .badge.bg-warning { background-color: rgba(245,158,11,0.15) !important; color: var(--text-primary); }
+.theme-soft-glass .badge.bg-danger { background-color: rgba(239,68,68,0.15) !important; color: var(--text-primary); }
 
 .attendance-table td, .attendance-table th {
   vertical-align: middle;
@@ -838,4 +1655,145 @@
   border-radius: 999px;
   padding: 4px 10px;
   display: inline-block;
+}
+
+/* ---- Dashboard 5173: estilo de tarjetas tipo panel ---- */
+/* Limpieza: se eliminaron refuerzos con !important duplicados que
+   contradecían el estilo minimal actual de tarjetas. */
+
+/* === Mejora de visibilidad en Attendance === */
+.theme-dsign .employee-name-chip {
+  display: inline-block;
+  padding: 0; /* sin relleno de pill */
+  border-radius: 0; /* sin bordes redondeados */
+  background: transparent; /* sin fondo */
+  border: none; /* sin borde */
+  color: var(--text-primary);
+  font-weight: 600; /* mantener legibilidad */
+  letter-spacing: 0.2px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+/* Botón Reset orden y Ver certificado usan outline-secondary */
+.theme-dsign .btn-outline-secondary {
+  color: #334155; /* slate-700 */
+  border-color: #7c8da6; /* slate-ish */
+  background-color: transparent;
+  box-shadow: none;
+}
+.theme-dsign .btn-outline-secondary:hover,
+.theme-dsign .btn-outline-secondary:focus {
+  color: #1f2937; /* slate-800 */
+  border-color: #6b7c94;
+  background-color: #e9eff7; /* leve relleno para mejor visibilidad */
+}
+.theme-dsign .btn-outline-secondary.btn-sm {
+  padding: 6px 10px; /* que no quede demasiado pequeño */
+  font-weight: 600;
+}
+
+/* Ajuste de tabla para mejor lectura de filas */
+.theme-dsign .attendance-table tbody tr:hover {
+  background-color: #f5f7fb;
+}
+
+/* Indicador de foco accesible para filas: anillo sutil sin cambiar el fondo */
+.theme-dsign .attendance-table tbody tr:focus-within {
+  outline: 2px solid rgba(99, 102, 241, 0.35);
+  outline-offset: -2px; /* dibuja el anillo dentro de la celda */
+}
+
+/* Subrayado sutil del nombre al pasar el mouse por la fila */
+.theme-dsign .attendance-table tbody tr:hover .employee-name-chip {
+  color: #334155; /* leve cambio de color en hover */
+  text-decoration: underline;
+  text-decoration-color: #94a3b8; /* slate-300 aprox */
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+/* Accessibility: underline when the row is focused via keyboard */
+.theme-dsign .attendance-table tbody tr:focus-within .employee-name-chip {
+  text-decoration: underline;
+  text-decoration-color: #94a3b8; /* slate-300 aprox */
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+/* If the name element itself gets focus, ensure consistency */
+.theme-dsign .employee-name-chip:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: #94a3b8; /* slate-300 aprox */
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* Alternative KPI metric card */
+.kpi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--color-indigo-600, rgba(79,70,229,0.35)),
+    var(--color-blue-300, rgba(96,165,250,0.35))
+  ); /* acento tipo dot discreto con variables y fallback */
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.10);
+}
+.kpi-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.kpi-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--color-gray-200, rgba(0,0,0,0.06));
+  box-shadow: none;
+}
+.kpi-title {
+  font-size: .75rem;
+}
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.kpi-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: .8rem;
+  border: none;
+  background: transparent;
+  opacity: .85;
+}
+.kpi-delta.up {
+  color: var(--color-green-700, #166534);
+}
+.kpi-delta.down {
+  color: var(--color-red-700, #991b1b);
+}
+.kpi-delta-symbol {
+  font-size: .9rem;
+  line-height: 1;
 }

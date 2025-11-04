@@ -15,6 +15,7 @@ const payrollRoutes = require('./routes/payrollRoutes');
 const accountRoutes = require('./routes/accountRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reminders = require('./jobs/reminders');
+const User = require('./models/User');
 
 const app = express();
 
@@ -127,11 +128,46 @@ async function startServer() {
     await mongoose.connect(memUri);
     console.log(`[DB] Conectado a MongoDB en memoria: ${memUri}`);
   }
+  // Seed de usuario admin por defecto (solo si está habilitado)
+  await seedDefaultAdmin();
   // Iniciar cron y servidor
-  reminders.start();
+  const remindersEnabled = String(process.env.REMINDERS_ENABLED || 'true').toLowerCase() !== 'false';
+  if (remindersEnabled) {
+    reminders.start();
+  } else {
+    console.log('[CRON] Recordatorios automáticos deshabilitados por configuración (REMINDERS_ENABLED=false)');
+  }
   app.listen(port, () => {
     console.log(`[API] Servidor escuchando en puerto ${port}`);
   });
 }
 
 startServer();
+
+// Crear usuario admin por defecto si no existe
+async function seedDefaultAdmin() {
+  try {
+    const enabled = String(process.env.SEED_DEFAULT_USER || 'true').toLowerCase() !== 'false';
+    if (!enabled) {
+      console.log('[SEED] Seed de usuario por defecto deshabilitado (SEED_DEFAULT_USER=false)');
+      return;
+    }
+    const email = process.env.ADMIN_SEED_EMAIL || 'admin@test.com';
+    const password = process.env.ADMIN_SEED_PASSWORD || '123456';
+    const nombre = process.env.ADMIN_SEED_NAME || 'Admin';
+    const role = process.env.ADMIN_SEED_ROLE || 'admin';
+    const exists = await User.findOne({ email });
+    if (exists) {
+      console.log(`[SEED] Usuario por defecto ya existe: ${email}`);
+      return;
+    }
+    const bcrypt = require('bcryptjs');
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+    const user = new User({ nombre, email, password: hashed, role });
+    await user.save();
+    console.log(`[SEED] Usuario por defecto creado: ${email} / ${password}`);
+  } catch (e) {
+    console.error('[SEED] Error creando usuario por defecto:', e.message);
+  }
+}

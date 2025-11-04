@@ -1,5 +1,0 @@
-[
-  { "id": "P001", "sku": "AZUC-1K", "nombre": "Azúcar 1kg", "unidad": "kg", "precio": 1200, "activo": true },
-  { "id": "P002", "sku": "YERB-1K", "nombre": "Yerba 1kg", "unidad": "kg", "precio": 3200, "activo": true },
-  { "id": "P003", "sku": "ARRO-1K", "nombre": "Arroz 1kg", "unidad": "kg", "precio": 1500, "activo": true }
-]

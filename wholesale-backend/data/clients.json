@@ -1,4 +1,0 @@
-[
-  { "id": "C001", "razonSocial": "Almacen Don Pepe", "cuit": "20-12345678-9", "domicilio": "Av. Siempreviva 742", "lat": -31.534, "lng": -68.523, "zona": "Centro", "condicionPago": "Contado", "vendedorId": "V001" },
-  { "id": "C002", "razonSocial": "Super La Esquina", "cuit": "20-87654321-0", "domicilio": "Calle San Martín 100", "lat": -31.538, "lng": -68.521, "zona": "Norte", "condicionPago": "30 días", "vendedorId": "V002" }
-]
