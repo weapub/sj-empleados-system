@@ -20,7 +20,7 @@ const MetricCardAlt = ({
         <Card.Body className="p-4">
           <div className="d-flex align-items-center justify-content-between mb-2">
             <div className="kpi-icon" style={{ borderColor: color }}>
-              {icon && React.cloneElement(icon, { size: 20, color })}
+              {icon && React.cloneElement(icon, { size: 22, color })}
             </div>
             {delta && (
               <span className={deltaClass}>
@@ -36,10 +36,10 @@ const MetricCardAlt = ({
           <div className="kpi-value">
             {loading ? '...' : value}
           </div>
-        </Card.Body>
-      </Card>
-    </Col>
-  );
+      </Card.Body>
+    </Card>
+  </Col>
+);
 };
 
 export default MetricCardAlt;
