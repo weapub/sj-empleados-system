@@ -426,6 +426,11 @@ input[type="month"]::-webkit-calendar-picker-indicator {
   opacity: 1;
   /* Aproximación al gris #a3a3a3 */
   filter: invert(64%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(94%) contrast(88%);
+  /* Ajuste visual de tamaño y separación */
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  cursor: pointer;
 }
 
 /* Específico para Bootstrap .form-control del campo periodo */
@@ -433,6 +438,10 @@ input[type="month"]::-webkit-calendar-picker-indicator {
 .form-control[name="period"]::-webkit-calendar-picker-indicator {
   opacity: 1;
   filter: invert(66%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(92%) contrast(90%);
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  cursor: pointer;
 }
 
 /* Fallback general (limitado en Firefox) */

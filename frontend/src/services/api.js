@@ -65,9 +65,10 @@ export const deleteEmployee = async (id) => {
 };
 
 // Servicios de dashboard
-export const getDashboardMetrics = async () => {
+// Permite pasar opciones de axios (por ejemplo, { signal }) para cancelación
+export const getDashboardMetrics = async (options = {}) => {
   setAuthToken(localStorage.getItem('token'));
-  const response = await axios.get(`${API_URL}/dashboard/metrics`);
+  const response = await axios.get(`${API_URL}/dashboard/metrics`, options);
   return response.data;
 };
 
