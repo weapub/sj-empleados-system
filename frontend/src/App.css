@@ -1904,3 +1904,42 @@ a:hover { color: var(--primary-color); }
 @media (min-width: 769px) {
   .show-on-mobile { display: none !important; }
 }
+
+/* =============================================
+   Mobile compact spacing overrides (2025-11)
+   Reducir padding y separación en pantallas móviles
+   ============================================= */
+@media (max-width: 768px) {
+  /* Contenedores */
+  .container { padding: 0.5rem 0.25rem; }
+  .container-fluid, .container { padding-left: 0.5rem; padding-right: 0.5rem; }
+
+  /* Tarjetas */
+  .card-body { padding: 0.75rem; }
+  .card-header { padding: 0.5rem 0.75rem; }
+  .balance-card .card-body { padding: 1rem; }
+
+  /* Nav */
+  .navbar-nav .nav-link { padding: 0.4rem 0.75rem !important; }
+  .navbar-collapse { padding: 0.4rem; }
+
+  /* Botones */
+  .btn { padding: 0.4rem 0.75rem; }
+  .btn-sm { padding: 0.2rem 0.4rem; }
+
+  /* Tablas */
+  .attendance-table th, .attendance-table td,
+  .disciplinary-table th, .disciplinary-table td { padding: 0.45rem 0.35rem; font-size: 0.88rem; }
+
+  /* MobileCard */
+  .mobile-card .mobile-card-header { padding-bottom: 0.3rem; }
+  .mobile-card .card-body { padding: 0.7rem; }
+  .mobile-card-field { padding: 0.2rem 0; }
+  .mobile-card .mobile-card-actions .btn { padding: 0.3rem 0.5rem; }
+  .mobile-view .mobile-card, .mobile-card { margin-bottom: 0.6rem; }
+}
+
+@media (max-width: 576px) {
+  /* Tablas XS aún más compactas */
+  .table th, .table td { padding: 0.4rem 0.2rem; }
+}
