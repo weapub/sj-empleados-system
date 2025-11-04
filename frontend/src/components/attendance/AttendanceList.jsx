@@ -480,7 +480,7 @@ const AttendanceList = () => {
                 <MobileCard
                   key={attendance._id}
                   title={attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Empleado desconocido'}
-                  subtitle={`${attendance.type} - ${formatDate(attendance.date)}`}
+                  subtitle={`Legajo: ${attendance.employee?.legajo || '-'}`}
                   fields={fields}
                   badges={badges}
                   actions={actions}
