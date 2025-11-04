@@ -127,7 +127,7 @@ const DisciplinaryList = () => {
           <div className="section-box">
             <div className="section-band" />
             <div className="p-3 p-md-4">
-              <SectionCard title="Listado" icon={<Gavel size={16} />}>
+              <SectionCard title="Listado" icon={<Gavel size={20} />}>
               <div className="table-responsive">
                 <Table hover responsive className="disciplinary-table mb-0 align-middle text-sm">
                   <thead>

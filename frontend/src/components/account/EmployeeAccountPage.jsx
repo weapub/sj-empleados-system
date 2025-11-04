@@ -146,7 +146,7 @@ const EmployeeAccountPage = () => {
       )}
 
       {/* Selector de empleado */}
-      <SectionCard title="Selección de Empleado" icon={<FaUser />} className="mb-4">
+          <SectionCard title="Selección de Empleado" icon={<FaUser size={20} />} className="mb-4">
         <Form.Group controlId="employeeSelect">
           <Form.Label>Empleado</Form.Label>
           <Form.Select 
@@ -167,7 +167,7 @@ const EmployeeAccountPage = () => {
       {account && (
         <>
           {/* Resumen y configuración */}
-          <SectionCard title="Resumen y Configuración" icon={<FaWallet />} className="mb-4">
+              <SectionCard title="Resumen y Configuración" icon={<FaWallet size={20} />} className="mb-4">
             <Row>
               <Col lg={4} md={6} className="mb-3">
                 <Card className="h-100 balance-card shadow-sm">
@@ -223,7 +223,7 @@ const EmployeeAccountPage = () => {
           {/* Formularios de transacciones */}
           <Row className="mb-4">
             <Col lg={6} className="mb-4">
-              <SectionCard title="Registrar Compra" icon={<FaShoppingCart />}>
+              <SectionCard title="Registrar Compra" icon={<FaShoppingCart size={20} />}>
                 <Form onSubmit={handleAddPurchase}>
                   <Form.Group className="mb-3">
                     <Form.Label>Monto</Form.Label>
@@ -261,7 +261,7 @@ const EmployeeAccountPage = () => {
               </SectionCard>
             </Col>
             <Col lg={6} className="mb-4">
-              <SectionCard title="Registrar Pago" icon={<FaMoneyBillWave />}>
+              <SectionCard title="Registrar Pago" icon={<FaMoneyBillWave size={20} />}>
                 <Form onSubmit={handleAddPayment}>
                   <Form.Group className="mb-3">
                     <Form.Label>Monto</Form.Label>
@@ -301,7 +301,7 @@ const EmployeeAccountPage = () => {
           </Row>
 
           {/* Historial de transacciones */}
-          <SectionCard title="Historial de Transacciones" icon={<FaHistory />}>
+              <SectionCard title="Historial de Transacciones" icon={<FaHistory size={20} />}>
             {transactions.length === 0 ? (
               <Alert variant="light" className="text-center mb-0">
                 <FaHistory size={30} className="text-muted mb-2" />

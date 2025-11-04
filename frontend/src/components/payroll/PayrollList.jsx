@@ -191,7 +191,7 @@ const PayrollList = () => {
       <div className="section-box mb-3">
       <div className="section-band" />
       <div className="p-3 p-md-4">
-      <SectionCard title="Filtros" icon={<Receipt size={16} />} className="mb-0">
+      <SectionCard title="Filtros" icon={<Receipt size={20} />} className="mb-0">
         <Row className="g-3 align-items-end">
           <Col md={6}>
             <Form.Group>
@@ -236,7 +236,7 @@ const PayrollList = () => {
             <div className="section-box">
             <div className="section-band" />
             <div className="p-3 p-md-4">
-          <SectionCard title="Listado" icon={<Receipt size={16} />}>
+          <SectionCard title="Listado" icon={<Receipt size={20} />}>
             <div className="table-responsive">
             <Table hover responsive className="payroll-table mb-0 align-middle text-sm">
               <thead>

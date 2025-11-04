@@ -215,7 +215,7 @@ const AttendanceList = () => {
         <div className="section-box mb-4">
         <div className="section-band" />
         <div className="p-3 p-md-4">
-        <SectionCard title="Filtros" icon={<Clock size={16} />}>
+        <SectionCard title="Filtros" icon={<Clock size={20} />}>
         <Row className="mb-3 align-items-end">
           <Col md={4}>
             <Form.Group>
@@ -281,7 +281,7 @@ const AttendanceList = () => {
           <div className="section-box">
           <div className="section-band" />
           <div className="p-3 p-md-4">
-          <SectionCard title="Listado" icon={<Clock size={16} />}>
+          <SectionCard title="Listado" icon={<Clock size={20} />}>
           <div className="table-responsive">
           <Table hover responsive className="attendance-table mb-0 align-middle text-sm">
             <thead>
