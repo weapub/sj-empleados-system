@@ -95,7 +95,12 @@ const EmployeeList = () => {
                   <tbody>
                     {employees.map(employee => (
                       <tr key={employee._id}>
-                        <td>{employee.nombre} {employee.apellido}</td>
+                        <td>
+                          <div className="fw-semibold text-truncate" title={`${employee.nombre} ${employee.apellido}`}>
+                            {employee.nombre} {employee.apellido}
+                          </div>
+                          <small className="text-muted">Legajo: {employee.legajo || '-'}</small>
+                        </td>
                         <td>{employee.email}</td>
                         <td>{employee.puesto}</td>
                         <td>{employee.departamento}</td>

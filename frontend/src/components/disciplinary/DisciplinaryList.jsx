@@ -149,16 +149,22 @@ const DisciplinaryList = () => {
                       disciplinaries.map((disciplinary) => (
                         <tr key={disciplinary._id}>
                           <td>
-                            {disciplinary.employee ? 
-                              `${disciplinary.employee.nombre} ${disciplinary.employee.apellido} (${disciplinary.employee.legajo})` : 
-                              'Empleado no disponible'}
+                            {disciplinary.employee ? (
+                              <>
+                                <div className="fw-semibold text-truncate" title={`${disciplinary.employee.nombre} ${disciplinary.employee.apellido}`}>
+                                  {disciplinary.employee.nombre} {disciplinary.employee.apellido}
+                                </div>
+                                <small className="text-muted">Legajo: {disciplinary.employee.legajo || '-'}</small>
+                              </>
+                            ) : 'Empleado no disponible'}
                           </td>
                           <td>{formatDate(disciplinary.date)}</td>
                           <td>{disciplinary.time || '-'}</td>
                           <td>
-                            <Badge bg={getBadgeColor(disciplinary.type)}>
+                            <span className={`badge badge-soft badge-soft-${getBadgeColor(disciplinary.type)}`}>
+                              <span className="dot"></span>
                               {getTypeText(disciplinary.type)}
-                            </Badge>
+                            </span>
                           </td>
                           <td>{disciplinary.durationDays ?? '-'}</td>
                           <td>{disciplinary.returnToWorkDate ? formatDate(disciplinary.returnToWorkDate) : '-'}</td>
