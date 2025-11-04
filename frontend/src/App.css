@@ -1865,6 +1865,12 @@ a:hover { color: var(--primary-color); }
   .mobile-card .mb-3 {
     margin-bottom: 0.5rem !important;
   }
+  .mobile-card .mb-2 {
+    margin-bottom: 0.4rem !important;
+  }
+  .mobile-card .mt-3 {
+    margin-top: 0.5rem !important;
+  }
   /* Reducir separación general entre tarjetas en móvil */
   .mobile-view .mobile-card,
   .mobile-card {
