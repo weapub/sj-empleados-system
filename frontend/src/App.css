@@ -1797,3 +1797,59 @@ a:hover { color: var(--primary-color); }
   font-size: .9rem;
   line-height: 1;
 }
+
+/* =============================
+   Mobile UX improvements (2025)
+   ============================= */
+/* Sticky navbar en móviles para navegación constante */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020; /* sobre el contenido */
+}
+
+/* Ajustes de encabezado y tarjetas en pantallas pequeñas */
+@media (max-width: 768px) {
+  /* Reordenar header: título y acciones en columna */
+  .page-header .d-flex.align-items-center.justify-content-between {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .page-header .header-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* Tipografía y espaciado de tarjetas móviles */
+  .mobile-card .mobile-card-header {
+    padding-bottom: 0.5rem;
+  }
+  .mobile-card .mobile-card-title {
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+  .mobile-card .mobile-card-actions .btn {
+    padding: 0.4rem 0.75rem;
+  }
+
+  /* Padding lateral más contenido en móviles */
+  .container-fluid,
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Utilidades para controlar visibilidad en móvil/escritorio */
+@media (max-width: 768px) {
+  .hide-on-mobile { display: none !important; }
+  .show-on-mobile { display: block !important; }
+}
+@media (min-width: 769px) {
+  .show-on-mobile { display: none !important; }
+}
