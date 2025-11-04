@@ -29,6 +29,26 @@ function App() {
     }
   }, [token]);
 
+  // Permitir deep links autenticados usando ?token= en la URL
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qpToken = params.get('token');
+      if (qpToken) {
+        localStorage.setItem('token', qpToken);
+        setToken(qpToken);
+        setIsAuthenticated(true);
+        // Limpia el token de la URL para evitar fugas en Referer
+        const url = new URL(window.location.href);
+        url.searchParams.delete('token');
+        window.history.replaceState({}, '', url.toString());
+      }
+    } catch (e) {
+      // No interrumpir la app si el parseo falla
+      console.warn('URL token parse failed:', e);
+    }
+  }, []);
+
   const login = (token) => {
     localStorage.setItem('token', token);
     setToken(token);
