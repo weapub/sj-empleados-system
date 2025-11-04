@@ -341,8 +341,9 @@ const PayrollList = () => {
                   <MobileCard
                     key={r._id}
                     title={r.employee ? `${r.employee.nombre} ${r.employee.apellido}` : 'Sin empleado'}
-                    subtitle={`Período: ${r.period} | Legajo: ${r.employee?.legajo || '-'}`}
+                    subtitle={`Legajo: ${r.employee?.legajo || '-'}`}
                     fields={[
+                      { label: 'Período', value: r.period },
                       { label: 'Fecha de Pago', value: formatDate(r.paymentDate) },
                       { label: 'Horas Extras', value: formatCurrency(r.extraHours) },
                       { label: 'Otros Adicionales', value: formatCurrency(r.otherAdditions) },
