@@ -68,3 +68,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+---
+
+## Virtualización de listas en móviles (v0.1.0)
+
+- En la vista móvil de asistencia (`src/components/attendance/AttendanceList.jsx`) se retiró `react-window` para evitar el error de build `[MISSING_EXPORT] FixedSizeList` con `rolldown/vite`.
+- En móvil ahora se renderiza con `Array.map`. Si necesitas virtualización por rendimiento en listados largos, se recomienda usar una alternativa ESM-friendly como `@tanstack/react-virtual`.
+- Nota histórica: con `react-window` era necesario pasar `width` numérico en `FixedSizeList` para evitar `TypeError: Object.values is not a function` en móviles; desde `v0.1.0` se eliminó su uso en móvil.
+- Referencias: ver `CHANGELOG.md` (v0.1.0) y la sección "Release v0.1.0 (Frontend)" en `DEPLOY.md`.
