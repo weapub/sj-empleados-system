@@ -2,6 +2,27 @@
 
 Este documento complementa el README con pasos prácticos para producción.
 
+## Release v0.1.0 (Frontend)
+- Fix móvil de asistencias: migración a `react-window` `FixedSizeList` y uso de `width` numérico (medido por contenedor). Evita `TypeError: Cannot convert undefined or null to object` observado en `vendor-react-*.js`.
+- Tailwind CSS actualizado a v4 con ajustes menores de estilos.
+- Workflows de CI y Deploy en GitHub Actions revisados: producción (`deploy-frontend.yml`) y previews (`deploy-frontend-preview.yml`).
+- Robustez al cargar empleados: el frontend admite respuesta `Array` o `{ data, total, page, totalPages }`.
+- Nota Vite/Rolldown: el plugin sugiere `@vitejs/plugin-react-oxc` para mejor performance; opcional.
+
+### Validaciones tras deploy
+- Abrir `/attendance` en móvil y confirmar render estable del listado y scroll.
+- Verificar que no aparecen errores de `react-window` en consola.
+- Comprobar filtros, orden y paginación funcionan en escritorio y móvil.
+
+### Consideraciones técnicas
+- `react-window` requiere `width` numérico en listas de tamaño fijo. Evitar pasar strings como `"100%"`; medir el ancho del contenedor y usar ese valor.
+- Si en ciertos dispositivos el ancho no es correcto, usar `ResizeObserver` sobre el contenedor para recalcular `width`.
+
+### Publicación del Release
+- Crear/editar Release en GitHub: `https://github.com/weapub/sj-empleados25/releases/new` seleccionando el tag `v0.1.0`.
+- Título sugerido: `SJ-Empleados v0.1.0`.
+- Incluir las notas anteriores en la descripción y publicar.
+
 ## 1) Frontend en Vercel
 - Root Directory: `frontend`
 - Build: `npm install && npm run build`
@@ -9,6 +30,7 @@ Este documento complementa el README con pasos prácticos para producción.
 - Env vars (Project Settings → Environment Variables):
   - `VITE_API_URL=https://tu-backend.onrender.com` (sin sufijo `/api`; el cliente lo agrega)
   - Si ves "Login – Vercel" y el `manifest.json` responde `401`, desactiva **Preview Protection** en Vercel o usa un dominio de producción público.
+  - Asegúrate de definir variables en Production y Preview.
 
 ## 9) Despliegue por GitHub Actions (Vercel)
 
