@@ -23,7 +23,8 @@ const MobileCard = ({
           <div className="mobile-card-badges mb-3">
             {badges.map((badge, index) => {
               const variantKey = (badge.variant || 'primary').toLowerCase();
-              const softClass = `badge-soft-${(variantKey === 'secondary' || variantKey === 'dark') ? 'primary' : variantKey}`;
+              // Map "dark" to a neutral soft style; keep real "secondary" as its own
+              const softClass = `badge-soft-${variantKey === 'dark' ? 'secondary' : variantKey}`;
               return badge.soft ? (
                 <span
                   key={index}

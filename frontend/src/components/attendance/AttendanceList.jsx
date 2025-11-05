@@ -8,6 +8,7 @@ import { getAttendances, getEmployees, deleteAttendance } from '../../services/a
 import PageHeader from '../common/PageHeader';
 import SectionCard from '../common/SectionCard';
 import { Clock, Plus } from 'lucide-react';
+import { List } from 'react-window';
 
 const AttendanceList = () => {
   const [attendances, setAttendances] = useState([]);
@@ -23,6 +24,8 @@ const AttendanceList = () => {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [sortBy, setSortBy] = useState('date');
   const [sortDir, setSortDir] = useState('desc');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
 
   useEffect(() => {
     const loadData = async () => {
@@ -49,6 +52,7 @@ const AttendanceList = () => {
       ...filter,
       [name]: value
     });
+    setPage(1);
   };
 
   const handleDelete = async (id) => {
@@ -115,6 +119,7 @@ const AttendanceList = () => {
     if (e && e.altKey) {
       setSortBy('date');
       setSortDir('desc');
+      setPage(1);
       return;
     }
     if (sortBy === key) {
@@ -123,6 +128,7 @@ const AttendanceList = () => {
       setSortBy(key);
       setSortDir('asc');
     }
+    setPage(1);
   };
 
   const renderSort = (key) => {
@@ -172,6 +178,17 @@ const AttendanceList = () => {
     if (va > vb) return sortDir === 'asc' ? 1 : -1;
     return 0;
   });
+
+  // Paginación en cliente
+  const totalCount = sortedAttendances.length;
+  const totalPages = Math.max(Math.ceil(totalCount / pageSize), 1);
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  const pagedAttendances = sortedAttendances.slice(start, end);
+  const canPrev = page > 1;
+  const canNext = page < totalPages;
+  const goPrev = () => { if (canPrev) setPage(page - 1); };
+  const goNext = () => { if (canNext) setPage(page + 1); };
 
   const openViewer = (url) => {
     setViewerUrl(url);
@@ -307,8 +324,8 @@ const AttendanceList = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedAttendances.length > 0 ? (
-                sortedAttendances.map(attendance => (
+              {pagedAttendances.length > 0 ? (
+                pagedAttendances.map(attendance => (
                   <tr key={attendance._id}>
                     <td>
                       <div className="fw-semibold text-truncate" title={getName(attendance)}>
@@ -390,6 +407,13 @@ const AttendanceList = () => {
             </tbody>
           </Table>
           </div>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <small className="text-muted">Total: {totalCount} — Página {page} de {totalPages}</small>
+            <div>
+              <Button variant="outline-secondary" size="sm" className="me-2" disabled={!canPrev} onClick={goPrev}>Anterior</Button>
+              <Button variant="outline-secondary" size="sm" disabled={!canNext} onClick={goNext}>Siguiente</Button>
+            </div>
+          </div>
           </SectionCard>
           </div>
           </div>
@@ -397,12 +421,14 @@ const AttendanceList = () => {
 
         {/* Vista móvil - Tarjetas */}
         <div className="mobile-view">
-          {filteredAttendances.length > 0 ? (
-            filteredAttendances.map(attendance => {
-              // Preparar campos dinámicos según el tipo
-              const fields = [
-                { label: 'Fecha', value: formatDate(attendance.date) }
-              ];
+          {pagedAttendances.length > 0 ? (
+            <List height={600} itemCount={pagedAttendances.length} itemSize={170} width={"100%"}>
+              {({ index, style }) => {
+                const attendance = pagedAttendances[index];
+                // Preparar campos dinámicos según el tipo
+                const fields = [
+                  { label: 'Fecha', value: formatDate(attendance.date) }
+                ];
 
               // Agregar campos específicos según el tipo
               if (attendance.type === 'tardanza') {
@@ -477,21 +503,31 @@ const AttendanceList = () => {
               }
 
               return (
-                <MobileCard
-                  key={attendance._id}
-                  title={attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Empleado desconocido'}
-                  subtitle={`Legajo: ${attendance.employee?.legajo || '-'}`}
-                  fields={fields}
-                  badges={badges}
-                  actions={actions}
-                />
+                <div style={style}>
+                  <MobileCard
+                    key={attendance._id}
+                    title={attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Empleado desconocido'}
+                    subtitle={`Legajo: ${attendance.employee?.legajo || '-'}`}
+                    fields={fields}
+                    badges={badges}
+                    actions={actions}
+                  />
+                </div>
               );
-            })
+              }}
+            </List>
           ) : (
             <div className="text-center py-4">
               <p className="text-muted">No hay registros que coincidan con los filtros</p>
             </div>
           )}
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <small className="text-muted">Total: {totalCount} — Página {page} de {totalPages}</small>
+            <div>
+              <Button variant="outline-secondary" size="sm" className="me-2" disabled={!canPrev} onClick={goPrev}>Anterior</Button>
+              <Button variant="outline-secondary" size="sm" disabled={!canNext} onClick={goNext}>Siguiente</Button>
+            </div>
+          </div>
         </div>
       </div>
       <DocumentViewerModal 

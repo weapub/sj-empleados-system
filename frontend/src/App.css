@@ -546,24 +546,24 @@ input[type="month"] {
 
 /* Botón primario neutro dentro de theme-dsign */
 .theme-dsign .btn-primary {
-  background-color: #374151 !important; /* slate-700 */
-  border-color: #374151 !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
 
 .theme-dsign .btn-primary:hover {
-  background-color: #1f2937 !important; /* slate-800 */
-  border-color: #1f2937 !important;
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
 }
 
 .theme-dsign .btn-primary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(55, 65, 81, 0.35) !important; /* slate-700 ring */
+  box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25) !important;
 }
 
 .theme-dsign .btn-primary:disabled,
 .theme-dsign .btn-primary.disabled {
-  background-color: #9ca3af !important; /* gray-400 */
+  background-color: #9ca3af !important;
   border-color: #9ca3af !important;
   color: #ffffff !important;
 }
@@ -710,9 +710,40 @@ input[type="month"] {
 .badge-soft-info .dot { background: #3b82f6; }
 .badge-soft-primary { background: #f5f3ff; color: #4c1d95; border-color: #ddd6fe; }
 .badge-soft-primary .dot { background: #7c3aed; }
+/* Neutral soft secondary for generic states */
+.badge-soft-secondary { background: #f1f5f9; color: #334155; border-color: #e5e7eb; }
+.badge-soft-secondary .dot { background: #64748b; }
 /* Variante adicional para estados negativos */
 .badge-soft-danger { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
 .badge-soft-danger .dot { background: #ef4444; }
+
+/* Harmonize soft badges under theme-dsign */
+.theme-dsign .badge-soft-success { background: #ecfdf5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+.theme-dsign .badge-soft-success .dot { background: #10b981 !important; }
+.theme-dsign .badge-soft-warning { background: #fffbeb !important; color: #92400e !important; border-color: #fde68a !important; }
+.theme-dsign .badge-soft-warning .dot { background: #f59e0b !important; }
+.theme-dsign .badge-soft-info { background: #eff6ff !important; color: #1e40af !important; border-color: #bfdbfe !important; }
+.theme-dsign .badge-soft-info .dot { background: #3b82f6 !important; }
+.theme-dsign .badge-soft-primary { background: #f5f3ff !important; color: #4c1d95 !important; border-color: #ddd6fe !important; }
+.theme-dsign .badge-soft-primary .dot { background: #7c3aed !important; }
+.theme-dsign .badge-soft-secondary { background: #f1f5f9 !important; color: #334155 !important; border-color: #e5e7eb !important; }
+.theme-dsign .badge-soft-secondary .dot { background: #64748b !important; }
+.theme-dsign .badge-soft-danger { background: #fef2f2 !important; color: #991b1b !important; border-color: #fecaca !important; }
+.theme-dsign .badge-soft-danger .dot { background: #ef4444 !important; }
+
+/* Harmonize soft badges under theme-soft-glass */
+.theme-soft-glass .badge-soft-success { background: #ecfdf5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+.theme-soft-glass .badge-soft-success .dot { background: #10b981 !important; }
+.theme-soft-glass .badge-soft-warning { background: #fffbeb !important; color: #92400e !important; border-color: #fde68a !important; }
+.theme-soft-glass .badge-soft-warning .dot { background: #f59e0b !important; }
+.theme-soft-glass .badge-soft-info { background: #eff6ff !important; color: #1e40af !important; border-color: #bfdbfe !important; }
+.theme-soft-glass .badge-soft-info .dot { background: #3b82f6 !important; }
+.theme-soft-glass .badge-soft-primary { background: #f5f3ff !important; color: #4c1d95 !important; border-color: #ddd6fe !important; }
+.theme-soft-glass .badge-soft-primary .dot { background: #7c3aed !important; }
+.theme-soft-glass .badge-soft-secondary { background: #f1f5f9 !important; color: #334155 !important; border-color: #e5e7eb !important; }
+.theme-soft-glass .badge-soft-secondary .dot { background: #64748b !important; }
+.theme-soft-glass .badge-soft-danger { background: #fef2f2 !important; color: #991b1b !important; border-color: #fecaca !important; }
+.theme-soft-glass .badge-soft-danger .dot { background: #ef4444 !important; }
 
 /* Mejoras para botones */
 .btn {
@@ -1749,10 +1780,10 @@ input[type="month"] {
   box-shadow: 0 2px 8px rgba(96,165,250,0.15);
   border-radius: 999px;
 }
-.theme-soft-glass .badge.bg-primary { background-color: rgba(96,165,250,0.15) !important; color: var(--text-primary); }
-.theme-soft-glass .badge.bg-success { background-color: rgba(16,185,129,0.15) !important; color: var(--text-primary); }
-.theme-soft-glass .badge.bg-warning { background-color: rgba(245,158,11,0.15) !important; color: var(--text-primary); }
-.theme-soft-glass .badge.bg-danger { background-color: rgba(239,68,68,0.15) !important; color: var(--text-primary); }
+.theme-soft-glass .badge.bg-primary { background-color: #f5f3ff !important; color: #4c1d95 !important; border-color: #ddd6fe !important; }
+.theme-soft-glass .badge.bg-success { background-color: #ecfdf5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+.theme-soft-glass .badge.bg-warning { background-color: #fffbeb !important; color: #92400e !important; border-color: #fde68a !important; }
+.theme-soft-glass .badge.bg-danger { background-color: #fef2f2 !important; color: #991b1b !important; border-color: #fecaca !important; }
 
 .attendance-table td, .attendance-table th {
   vertical-align: middle;

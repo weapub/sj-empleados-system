@@ -1,0 +1,57 @@
+/* =====================================================
+   Unified Buttons & Badges palette (conflict resolution)
+   Ensures consistent contrast and colors across themes
+   ===================================================== */
+
+/* Buttons: consistent semantic colors with safe contrast */
+.btn {
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+.btn-primary {
+  background-color: var(--primary-color, #3b82f6) !important;
+  border-color: var(--primary-color, #3b82f6) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark, #1e40af) !important;
+  border-color: var(--primary-dark, #1e40af) !important;
+}
+.btn-secondary {
+  background-color: #ffffff !important;
+  border-color: var(--border-color, #e5e7eb) !important;
+  color: var(--text-primary, #0f172a) !important;
+}
+.btn-success {
+  background-color: var(--success-color, #10b981) !important;
+  border-color: var(--success-color, #10b981) !important;
+  color: #ffffff !important;
+}
+.btn-warning {
+  background-color: var(--warning-color, #f59e0b) !important;
+  border-color: var(--warning-color, #f59e0b) !important;
+  color: #111827 !important; /* dark text for accessibility on amber */
+}
+.btn-danger {
+  background-color: var(--danger-color, #ef4444) !important;
+  border-color: var(--danger-color, #ef4444) !important;
+  color: #ffffff !important;
+}
+.btn-info {
+  background-color: var(--info-color, #3b82f6) !important;
+  border-color: var(--info-color, #3b82f6) !important;
+  color: #ffffff !important;
+}
+
+/* Badges: soft backgrounds with strong readable text */
+.badge {
+  border: 1px solid var(--border-color, #e5e7eb);
+  box-shadow: none;
+}
+.badge.bg-primary { background-color: #f5f3ff !important; color: #4c1d95 !important; border-color: #ddd6fe !important; }
+.badge.bg-success { background-color: #ecfdf5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+.badge.bg-warning { background-color: #fffbeb !important; color: #92400e !important; border-color: #fde68a !important; }
+.badge.bg-danger { background-color: #fef2f2 !important; color: #991b1b !important; border-color: #fecaca !important; }
+.badge.bg-info { background-color: #eff6ff !important; color: #1e40af !important; border-color: #bfdbfe !important; }
+/* Add secondary variant for non-soft badges */
+.badge.bg-secondary { background-color: #f1f5f9 !important; color: #334155 !important; border-color: #e5e7eb !important; }

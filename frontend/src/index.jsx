@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+// Load visual overrides after base styles to ensure cascade
+import './styles/overrides.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
