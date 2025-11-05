@@ -35,7 +35,13 @@ const AttendanceList = () => {
           getEmployees()
         ]);
         setAttendances(attendancesData);
-        setEmployees(employeesData);
+        // getEmployees puede devolver { data, total, page, totalPages } o un array
+        const employeesArray = Array.isArray(employeesData)
+          ? employeesData
+          : (employeesData && Array.isArray(employeesData.data))
+            ? employeesData.data
+            : [];
+        setEmployees(employeesArray);
         setLoading(false);
       } catch (err) {
         setError('Error al cargar los datos');
@@ -68,7 +74,7 @@ const AttendanceList = () => {
 
   const filteredAttendances = attendances.filter(attendance => {
     return (
-      (filter.employeeId === '' || attendance.employee._id === filter.employeeId) &&
+      (filter.employeeId === '' || (attendance.employee?._id ?? '') === filter.employeeId) &&
       (filter.type === '' || attendance.type === filter.type) &&
       (filter.justified === '' || 
         (filter.justified === 'true' && attendance.justified) || 
@@ -77,7 +83,8 @@ const AttendanceList = () => {
   });
 
   const getEmployeeName = (employeeId) => {
-    const employee = employees.find(emp => emp._id === employeeId);
+    const list = Array.isArray(employees) ? employees : [];
+    const employee = list.find(emp => emp._id === employeeId);
     return employee ? `${employee.nombre} ${employee.apellido}` : 'Desconocido';
   };
 
@@ -243,7 +250,7 @@ const AttendanceList = () => {
                 onChange={handleFilterChange}
               >
                 <option value="">Todos los empleados</option>
-                {employees.map(employee => (
+                {(Array.isArray(employees) ? employees : []).map(employee => (
                   <option key={employee._id} value={employee._id}>
                     {employee.nombre} {employee.apellido}
                   </option>
