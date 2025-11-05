@@ -39,8 +39,9 @@ const PayrollForm = () => {
   useEffect(() => {
     const loadEmployees = async () => {
       try {
-        const data = await getEmployees();
-        setEmployees(data);
+        const resp = await getEmployees(); // { data, total, page, totalPages }
+        const list = Array.isArray(resp?.data) ? resp.data : [];
+        setEmployees(list);
       } catch (err) {
         console.error('Error al cargar empleados:', err);
       }

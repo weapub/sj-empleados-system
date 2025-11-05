@@ -28,11 +28,12 @@ const EmployeeAccountPage = () => {
     const loadEmployees = async () => {
       try {
         setLoading(true);
-        const data = await getEmployees();
-        setEmployees(data);
+        const resp = await getEmployees(); // { data, total, page, totalPages }
+        const list = Array.isArray(resp?.data) ? resp.data : [];
+        setEmployees(list);
         // Autoseleccionar el primer empleado para cargar la cuenta automáticamente
-        if (Array.isArray(data) && data.length > 0 && !selectedEmployee) {
-          const firstId = data[0]._id;
+        if (list.length > 0 && !selectedEmployee) {
+          const firstId = list[0]._id;
           setSelectedEmployee(firstId);
           // Cargar la cuenta del primer empleado
           try {
