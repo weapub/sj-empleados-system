@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 // Normalizar base URL: quitar barras finales y sufijo /api si existe,
 // y asegurar que todas las llamadas usen siempre /api
@@ -13,13 +14,36 @@ axios.interceptors.response.use(
   (error) => {
     const status = error?.response?.status;
     if (status === 401) {
+      // Evitar múltiples toasts/redirecciones simultáneas
+      const w = typeof window !== 'undefined' ? window : null;
+      if (w && w._authRedirecting) {
+        return Promise.reject(error);
+      }
+      if (w) {
+        w._authRedirecting = true;
+      }
       try {
         localStorage.removeItem('token');
       } catch (_) {}
       delete axios.defaults.headers.common['x-auth-token'];
+      // Notificación toast
+      try {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'info',
+          title: 'Sesión expirada, inicia nuevamente',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true,
+        });
+      } catch (_) {}
       const isLogin = typeof window !== 'undefined' && window.location?.pathname === '/login';
       if (!isLogin && typeof window !== 'undefined') {
-        window.location.replace('/login');
+        // Dar tiempo a que se vea el toast
+        setTimeout(() => {
+          window.location.replace('/login');
+        }, 800);
       }
     }
     return Promise.reject(error);
