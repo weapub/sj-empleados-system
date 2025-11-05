@@ -8,7 +8,7 @@ import { getAttendances, getEmployees, deleteAttendance } from '../../services/a
 import PageHeader from '../common/PageHeader';
 import SectionCard from '../common/SectionCard';
 import { Clock, Plus } from 'lucide-react';
-import { FixedSizeList } from 'react-window';
+// Eliminado react-window para evitar problemas de interop en build
 
 const AttendanceList = () => {
   const [attendances, setAttendances] = useState([]);
@@ -441,13 +441,11 @@ const AttendanceList = () => {
         {/* Vista móvil - Tarjetas */}
         <div className="mobile-view" ref={containerRef}>
           {pagedAttendances.length > 0 ? (
-            <FixedSizeList height={600} itemCount={pagedAttendances.length} itemSize={170} width={listWidth || 360}>
-              {({ index, style }) => {
-                const attendance = pagedAttendances[index];
-                // Preparar campos dinámicos según el tipo
-                const fields = [
-                  { label: 'Fecha', value: formatDate(attendance.date) }
-                ];
+            pagedAttendances.map((attendance) => {
+              // Preparar campos dinámicos según el tipo
+              const fields = [
+                { label: 'Fecha', value: formatDate(attendance.date) }
+              ];
 
               // Agregar campos específicos según el tipo
               if (attendance.type === 'tardanza') {
@@ -522,9 +520,8 @@ const AttendanceList = () => {
               }
 
               return (
-                <div style={style}>
+                <div key={attendance._id} className="mb-3">
                   <MobileCard
-                    key={attendance._id}
                     title={attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Empleado desconocido'}
                     subtitle={`Legajo: ${attendance.employee?.legajo || '-'}`}
                     fields={fields}
@@ -533,8 +530,7 @@ const AttendanceList = () => {
                   />
                 </div>
               );
-              }}
-            </FixedSizeList>
+            })
           ) : (
             <div className="text-center py-4">
               <p className="text-muted">No hay registros que coincidan con los filtros</p>
