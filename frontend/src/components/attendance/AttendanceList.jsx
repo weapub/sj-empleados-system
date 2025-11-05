@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Table, Button, Card, Badge, Row, Col, Form } from 'react-bootstrap';
@@ -8,7 +8,7 @@ import { getAttendances, getEmployees, deleteAttendance } from '../../services/a
 import PageHeader from '../common/PageHeader';
 import SectionCard from '../common/SectionCard';
 import { Clock, Plus } from 'lucide-react';
-import { List } from 'react-window';
+import { FixedSizeList } from 'react-window';
 
 const AttendanceList = () => {
   const [attendances, setAttendances] = useState([]);
@@ -26,6 +26,18 @@ const AttendanceList = () => {
   const [sortDir, setSortDir] = useState('desc');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  const containerRef = useRef(null);
+  const [listWidth, setListWidth] = useState(0);
+
+  useEffect(() => {
+    const measure = () => {
+      const w = containerRef.current?.clientWidth || 360;
+      setListWidth(w);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -427,9 +439,9 @@ const AttendanceList = () => {
         </div>
 
         {/* Vista móvil - Tarjetas */}
-        <div className="mobile-view">
+        <div className="mobile-view" ref={containerRef}>
           {pagedAttendances.length > 0 ? (
-            <List height={600} itemCount={pagedAttendances.length} itemSize={170} width={"100%"}>
+            <FixedSizeList height={600} itemCount={pagedAttendances.length} itemSize={170} width={listWidth || 360}>
               {({ index, style }) => {
                 const attendance = pagedAttendances[index];
                 // Preparar campos dinámicos según el tipo
@@ -522,7 +534,7 @@ const AttendanceList = () => {
                 </div>
               );
               }}
-            </List>
+            </FixedSizeList>
           ) : (
             <div className="text-center py-4">
               <p className="text-muted">No hay registros que coincidan con los filtros</p>
