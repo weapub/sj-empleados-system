@@ -254,9 +254,9 @@ const EmployeeAccountPage = () => {
                       onChange={(e) => setPurchaseDate(e.target.value)} 
                     />
                   </Form.Group>
-                  <Button type="submit" variant="success" className="w-100 shadow-sm">
-                    <FaShoppingCart className="me-2" />
-                    Agregar Compra
+                  <Button type="submit" variant="primary" className="w-100 shadow-sm">
+                    <FaShoppingCart size={16} className="me-2" />
+                    Registrar Compra
                   </Button>
                 </Form>
               </SectionCard>
@@ -293,8 +293,8 @@ const EmployeeAccountPage = () => {
                     />
                   </Form.Group>
                   <Button type="submit" variant="primary" className="w-100 shadow-sm">
-                    <FaMoneyBillWave className="me-2" />
-                    Registrar Pago
+                    <FaMoneyBillWave size={16} className="me-2" />
+                    Realizar Pago
                   </Button>
                 </Form>
               </SectionCard>
