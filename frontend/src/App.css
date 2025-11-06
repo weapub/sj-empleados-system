@@ -2299,3 +2299,17 @@ input[type="month"] {
   margin-bottom: 0;
   font-size: clamp(1rem, 2.2vw, 1.25rem);
 }
+
+/* =============================================
+   Desktop compact sizing overrides (PC)
+   Reducir tamaño de botones y badges en escritorio
+   ============================================= */
+@media (min-width: 769px) {
+  /* Botones más compactos en PC */
+  .btn { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+  .btn-sm { padding: 0.22rem 0.44rem; font-size: 0.75rem; }
+
+  /* Badges más compactos en PC */
+  .badge,
+  .badge-soft { padding: 0.35rem 0.55rem; font-size: 0.72rem; }
+}
