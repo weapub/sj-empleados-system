@@ -2142,11 +2142,11 @@ input[type="month"] {
   .payroll-table th, .payroll-table td { padding: 0.4rem 0.3rem; font-size: 0.86rem; }
 
   /* MobileCard */
-  .mobile-card .mobile-card-header { padding-bottom: 0.3rem; }
-  .mobile-card .card-body { padding: 0.7rem; }
-  .mobile-card-field { padding: 0.2rem 0; }
-  .mobile-card .mobile-card-actions .btn { padding: 0.3rem 0.5rem; }
-  .mobile-view .mobile-card, .mobile-card { margin-bottom: 0.6rem; }
+  .mobile-card .mobile-card-header { padding-bottom: 0.25rem; }
+  .mobile-card .card-body { padding: 0.6rem; }
+  .mobile-card-field { padding: 0.15rem 0; }
+  .mobile-card .mobile-card-actions .btn { padding: 0.28rem 0.48rem; }
+  .mobile-view .mobile-card, .mobile-card { margin-bottom: 0.5rem; }
 }
 
 @media (max-width: 576px) {
