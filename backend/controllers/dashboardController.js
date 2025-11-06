@@ -9,13 +9,30 @@ exports.getDashboardMetrics = async (req, res) => {
     // Obtener empleados activos
     const empleadosActivos = await Employee.countDocuments({ activo: true });
     
-    // Calcular el primer día del mes actual
+    // Calcular referencias de fecha (mes actual y anterior)
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayPrevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const endPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
     
-    // Obtener inasistencias del mes actual
+    // Inasistencias del mes (type: 'inasistencia') y mes anterior
     const inasistenciasMes = await Attendance.countDocuments({
+      type: 'inasistencia',
       date: { $gte: firstDayOfMonth }
+    });
+    const inasistenciasPrev = await Attendance.countDocuments({
+      type: 'inasistencia',
+      date: { $gte: firstDayPrevMonth, $lte: endPrevMonth }
+    });
+
+    // Tardanzas del mes (type: 'tardanza') y mes anterior
+    const tardanzasMes = await Attendance.countDocuments({
+      type: 'tardanza',
+      date: { $gte: firstDayOfMonth }
+    });
+    const tardanzasPrev = await Attendance.countDocuments({
+      type: 'tardanza',
+      date: { $gte: firstDayPrevMonth, $lte: endPrevMonth }
     });
     
     // Obtener inasistencias por tipo
@@ -44,34 +61,67 @@ exports.getDashboardMetrics = async (req, res) => {
       date: { $gte: firstDayOfMonth }
     });
     
-    // Obtener empleados sin presentismo
-    const sinPresentismo = await Attendance.countDocuments({
+    // Empleados sin presentismo (distintos en el mes)
+    const sinPresentismoDistinct = await Attendance.distinct('employee', {
       lostPresentismo: true,
       date: { $gte: firstDayOfMonth }
     });
+    const sinPresentismo = sinPresentismoDistinct.length;
+    const sinPresentismoPrevDistinct = await Attendance.distinct('employee', {
+      lostPresentismo: true,
+      date: { $gte: firstDayPrevMonth, $lte: endPrevMonth }
+    });
+    const sinPresentismoPrev = sinPresentismoPrevDistinct.length;
     
-    // Total histórico de registros
-    const totalHistorico = await Attendance.countDocuments();
+    // Total histórico disciplinario
+    const totalHistorico = await Disciplinary.countDocuments();
     
     // Apercibimientos (mes actual): medidas disciplinarias de tipo 'verbal' o 'formal'
     const apercibimientos = await Disciplinary.countDocuments({
       type: { $in: ['verbal', 'formal'] },
       date: { $gte: firstDayOfMonth }
     });
+    const apercibimientosPrev = await Disciplinary.countDocuments({
+      type: { $in: ['verbal', 'formal'] },
+      date: { $gte: firstDayPrevMonth, $lte: endPrevMonth }
+    });
 
     // Sanciones activas: medidas disciplinarias con suspensión vigente
-    const today = new Date();
     const sancionesActivas = await Disciplinary.countDocuments({
       durationDays: { $ne: null },
       returnToWorkDate: { $ne: null, $gte: today }
     });
+    // Aproximación: activas al cierre del mes anterior
+    const sancionesActivasPrev = await Disciplinary.countDocuments({
+      durationDays: { $ne: null },
+      returnToWorkDate: { $ne: null, $gte: endPrevMonth }
+    });
 
-    // Recibos pendientes: recibos no firmados
-    const recibosPendientes = await PayrollReceipt.countDocuments({ signed: false });
+    // Recibos pendientes: periodo actual y previo (no firmados)
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const currentPeriod = `${yyyy}-${mm}`;
+    const prevY = endPrevMonth.getFullYear();
+    const prevM = String(endPrevMonth.getMonth() + 1).padStart(2, '0');
+    const prevPeriod = `${prevY}-${prevM}`;
+    const recibosPendientes = await PayrollReceipt.countDocuments({ signed: false, period: currentPeriod });
+    const recibosPendientesPrev = await PayrollReceipt.countDocuments({ signed: false, period: prevPeriod });
+
+    // Calcular deltas (variación porcentual mes a mes donde aplica)
+    const deltaPercent = (curr, prev) => {
+      if (prev > 0) {
+        const diff = curr - prev;
+        const pct = Math.round((diff / prev) * 100);
+        const sign = pct >= 0 ? '+' : '';
+        return `${sign}${pct}%`;
+      }
+      return null;
+    };
 
     const metrics = {
       empleadosActivos,
       inasistenciasMes,
+      tardanzasMes,
       justificadas,
       injustificadas,
       licenciasMedicas,
@@ -81,7 +131,15 @@ exports.getDashboardMetrics = async (req, res) => {
       totalHistorico,
       apercibimientos,
       sancionesActivas,
-      recibosPendientes
+      recibosPendientes,
+      deltas: {
+        inasistenciasMes: deltaPercent(inasistenciasMes, inasistenciasPrev),
+        tardanzasMes: deltaPercent(tardanzasMes, tardanzasPrev),
+        sinPresentismo: deltaPercent(sinPresentismo, sinPresentismoPrev),
+        apercibimientos: deltaPercent(apercibimientos, apercibimientosPrev),
+        sancionesActivas: deltaPercent(sancionesActivas, sancionesActivasPrev),
+        recibosPendientes: deltaPercent(recibosPendientes, recibosPendientesPrev)
+      }
     };
 
     res.json(metrics);

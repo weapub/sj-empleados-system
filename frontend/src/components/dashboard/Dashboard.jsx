@@ -19,16 +19,16 @@ const Dashboard = () => {
     loading: true,
     error: false
   });
-  // Deltas para emular variaciones como en la imagen
+  // Deltas reales (calculados en backend); si no hay base, ocultar
   const [deltas, setDeltas] = useState({
-    empleadosActivos: '+5%',
-    inasistenciasMes: '-2%',
-    tardanzasMes: '+8%',
-    sinPresentismo: '-1%',
-    apercibimientos: '+3%',
-    sancionesActivas: '+1%',
-    recibosPendientes: '+2%',
-    totalHistorico: '+4%'
+    empleadosActivos: null,
+    inasistenciasMes: null,
+    tardanzasMes: null,
+    sinPresentismo: null,
+    apercibimientos: null,
+    sancionesActivas: null,
+    recibosPendientes: null,
+    totalHistorico: null
   });
 
   useEffect(() => {
@@ -42,6 +42,9 @@ const Dashboard = () => {
           loading: false,
           error: false
         }));
+        if (metrics?.deltas) {
+          setDeltas(prev => ({ ...prev, ...metrics.deltas }));
+        }
       } catch (error) {
         // Ignorar cancelaciones explícitas para evitar ruido en consola
         if (isCanceledError(error)) {
