@@ -2305,6 +2305,14 @@ input[type="month"] {
    Reducir tamaño de botones y badges en escritorio
    ============================================= */
 @media (min-width: 769px) {
+  /* Navbar a ancho completo en escritorio */
+  .navbar .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: clamp(0.75rem, 2vw, 1.25rem);
+    padding-right: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
   /* Botones más compactos en PC */
   .btn { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
   .btn-sm { padding: 0.22rem 0.44rem; font-size: 0.75rem; }
