@@ -2138,7 +2138,8 @@ input[type="month"] {
 
   /* Tablas */
   .attendance-table th, .attendance-table td,
-  .disciplinary-table th, .disciplinary-table td { padding: 0.4rem 0.3rem; font-size: 0.86rem; }
+  .disciplinary-table th, .disciplinary-table td,
+  .payroll-table th, .payroll-table td { padding: 0.4rem 0.3rem; font-size: 0.86rem; }
 
   /* MobileCard */
   .mobile-card .mobile-card-header { padding-bottom: 0.3rem; }
