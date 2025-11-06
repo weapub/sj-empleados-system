@@ -72,7 +72,7 @@ const EmployeeList = () => {
         title="Empleados"
         subtitle="Gestione el registro y edición de empleados"
         actions={(
-          <Link to="/employees/new">
+          <Link to="/employees/new" className="d-none d-md-inline-flex">
             <Button variant="primary" className="shadow-sm">
               <Plus size={16} className="me-2" />
               Nuevo Empleado
@@ -151,6 +151,15 @@ const EmployeeList = () => {
 
           {/* Vista móvil - Tarjetas */}
           <div className="mobile-view">
+            {/* Acción principal en mobile: Nuevo Empleado */}
+            <div className="d-md-none mb-3">
+              <Link to="/employees/new">
+                <Button variant="primary" size="sm" className="w-100 shadow-sm">
+                  <Plus size={16} className="me-2" />
+                  Nuevo Empleado
+                </Button>
+              </Link>
+            </div>
             {employees.map(employee => (
               <MobileCard
                 key={employee._id}
