@@ -2469,8 +2469,8 @@ button.btn.btn-sm {
 @media (max-width: 576px) {
   /* Reducir gutters laterales para ampliar el contenido útil */
   body {
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
   .container,
   .container-fluid {
