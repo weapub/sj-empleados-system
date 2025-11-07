@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Modal, Button, ButtonGroup } from 'react-bootstrap';
+import { Download, Printer, ZoomIn, ZoomOut, RotateCcw, RefreshCcw, ExternalLink, X } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 
 // Configurar worker de PDF.js desde CDN para evitar bundling del worker
@@ -177,21 +178,35 @@ const DocumentViewerModal = ({ show, onHide, url, title = 'Documento' }) => {
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div>
               <ButtonGroup>
-                <Button variant="outline-primary" onClick={handleDownload}>
-                  Descargar
+                <Button variant="outline-primary" onClick={handleDownload} className="inline-flex items-center gap-2">
+                  <Download size={16} />
+                  <span>Descargar</span>
                 </Button>
-                <Button variant="outline-secondary" onClick={handlePrint}>
-                  Imprimir
+                <Button variant="outline-secondary" onClick={handlePrint} className="inline-flex items-center gap-2">
+                  <Printer size={16} />
+                  <span>Imprimir</span>
                 </Button>
               </ButtonGroup>
             </div>
             {image && (
               <div>
                 <ButtonGroup>
-                  <Button variant="outline-dark" onClick={() => setZoom((z) => Math.min(3, z + 0.1))}>Zoom +</Button>
-                  <Button variant="outline-dark" onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}>Zoom -</Button>
-                  <Button variant="outline-dark" onClick={() => setRotation((r) => (r + 90) % 360)}>Rotar 90°</Button>
-                  <Button variant="outline-dark" onClick={() => { setZoom(1); setRotation(0); }}>Reset</Button>
+                  <Button variant="outline-dark" onClick={() => setZoom((z) => Math.min(3, z + 0.1))} className="inline-flex items-center gap-2">
+                    <ZoomIn size={16} />
+                    <span>Zoom +</span>
+                  </Button>
+                  <Button variant="outline-dark" onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))} className="inline-flex items-center gap-2">
+                    <ZoomOut size={16} />
+                    <span>Zoom -</span>
+                  </Button>
+                  <Button variant="outline-dark" onClick={() => setRotation((r) => (r + 90) % 360)} className="inline-flex items-center gap-2">
+                    <RotateCcw size={16} />
+                    <span>Rotar 90°</span>
+                  </Button>
+                  <Button variant="outline-dark" onClick={() => { setZoom(1); setRotation(0); }} className="inline-flex items-center gap-2">
+                    <RefreshCcw size={16} />
+                    <span>Reset</span>
+                  </Button>
                 </ButtonGroup>
               </div>
             )}
@@ -236,9 +251,18 @@ const DocumentViewerModal = ({ show, onHide, url, title = 'Documento' }) => {
           <div>
             <div className="d-flex justify-content-between align-items-center mb-2">
               <ButtonGroup>
-                <Button variant="outline-dark" onClick={() => setPdfScale((s) => Math.min(2.5, s + 0.1))}>Zoom +</Button>
-                <Button variant="outline-dark" onClick={() => setPdfScale((s) => Math.max(0.5, s - 0.1))}>Zoom -</Button>
-                <Button variant="outline-dark" onClick={() => setPdfScale(1.1)}>Reset</Button>
+                <Button variant="outline-dark" onClick={() => setPdfScale((s) => Math.min(2.5, s + 0.1))} className="inline-flex items-center gap-2">
+                  <ZoomIn size={16} />
+                  <span>Zoom +</span>
+                </Button>
+                <Button variant="outline-dark" onClick={() => setPdfScale((s) => Math.max(0.5, s - 0.1))} className="inline-flex items-center gap-2">
+                  <ZoomOut size={16} />
+                  <span>Zoom -</span>
+                </Button>
+                <Button variant="outline-dark" onClick={() => setPdfScale(1.1)} className="inline-flex items-center gap-2">
+                  <RefreshCcw size={16} />
+                  <span>Reset</span>
+                </Button>
               </ButtonGroup>
             </div>
             <div style={{ width: '100%', height: '75vh', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: 8 }}>
@@ -255,11 +279,15 @@ const DocumentViewerModal = ({ show, onHide, url, title = 'Documento' }) => {
       </Modal.Body>
       <Modal.Footer>
         {url && (
-          <Button variant="primary" onClick={handleOpenNewTab}>
-            Abrir en pestaña nueva
+          <Button variant="primary" onClick={handleOpenNewTab} className="inline-flex items-center gap-2">
+            <ExternalLink size={16} />
+            <span>Abrir en pestaña nueva</span>
           </Button>
         )}
-        <Button variant="secondary" onClick={onHide}>Cerrar</Button>
+        <Button variant="secondary" onClick={onHide} className="inline-flex items-center gap-2">
+          <X size={16} />
+          <span>Cerrar</span>
+        </Button>
       </Modal.Footer>
     </Modal>
   );
