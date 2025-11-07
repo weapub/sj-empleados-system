@@ -2461,3 +2461,39 @@ button.btn.btn-sm {
   align-items: center;
   justify-content: center;
 }
+
+/* =============================================
+   Mobile width optimization (responsive gutters)
+   Mejora el aprovechamiento del ancho en tarjetas
+   ============================================= */
+@media (max-width: 576px) {
+  /* Reducir gutters laterales para ampliar el contenido útil */
+  body {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .container,
+  .container-fluid {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  /* SectionCard: compactar paddings internos en móvil */
+  .section-card .section-card-header {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .section-card .card-body {
+    padding: 0.6rem 0.75rem;
+  }
+
+  /* MobileCard: reducir padding interno del body para mayor área útil */
+  .mobile-card .card-body {
+    padding: 0.6rem 0.75rem;
+  }
+  .mobile-card-header {
+    margin-bottom: 0.5rem;
+  }
+}
