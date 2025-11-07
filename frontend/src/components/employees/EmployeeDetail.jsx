@@ -41,11 +41,37 @@ const EmployeeDetail = () => {
     fetchEvents();
   }, [id]);
 
+  const normalizeWaNumber = (raw) => {
+    if (!raw) return null;
+    const digits = String(raw).replace(/\D/g, '');
+    if (!digits) return null;
+    // Asegurar código de país (AR: 54). wa.me requiere formato internacional sin '+'
+    const withCountry = digits.startsWith('54') ? digits : `54${digits}`;
+    // Quitar ceros iniciales tras el código de país (e.g., 54011 -> 5411)
+    const cleaned = `54${withCountry.slice(2).replace(/^0+/, '')}`;
+    // Si tras limpieza queda muy corto, consideramos inválido
+    if (cleaned.length < 10) return null;
+    return cleaned;
+  };
+
   const openWhatsApp = (text) => {
-    if (!employee || !employee.telefono) return;
-    const phone = String(employee.telefono).replace(/\D/g, '');
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    if (!employee || !employee.telefono) {
+      alert('No hay teléfono cargado para el empleado.');
+      return;
+    }
+    const waNumber = normalizeWaNumber(employee.telefono);
+    if (!waNumber) {
+      alert('Número de WhatsApp inválido. Verifique que incluya código de área.');
+      return;
+    }
+    const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(text || '')}`;
+    const win = window.open(url, '_blank', 'noopener');
+    if (win) {
+      win.focus();
+    } else {
+      // Fallback si el navegador bloquea popups
+      window.location.href = url;
+    }
   };
 
   const createEvent = async () => {
