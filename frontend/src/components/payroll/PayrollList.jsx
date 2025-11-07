@@ -190,7 +190,7 @@ const PayrollList = () => {
         subtitle="Gestione, filtre y ordene los recibos emitidos"
         actions={(
           <Button variant="primary" className="shadow-sm" onClick={() => navigate('/payroll/new')}>
-            <Plus size={16} className="me-1" /> Registrar Nuevo Recibo
+            <Plus size={16} /> <span>Registrar Nuevo Recibo</span>
           </Button>
         )}
       />
@@ -202,7 +202,7 @@ const PayrollList = () => {
           className="mobile-cta-btn shadow-lg"
           onClick={() => navigate('/payroll/new')}
         >
-          <Plus size={18} className="me-2" /> Registrar Nuevo Recibo +
+          <Plus size={18} /> <span>Registrar Nuevo Recibo +</span>
         </Button>
       </div>
 
