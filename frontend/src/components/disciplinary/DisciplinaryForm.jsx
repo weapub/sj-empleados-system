@@ -294,10 +294,10 @@ const DisciplinaryForm = () => {
 
             <div className="d-flex justify-content-between mt-4">
               <Button variant="secondary" className="shadow-sm" onClick={() => navigate('/disciplinary')}>
-                <FaArrowLeft className="me-1" /> Volver
+                <FaArrowLeft /> <span>Volver</span>
               </Button>
               <Button variant="primary" type="submit" disabled={loading} className="shadow-sm">
-                <FaSave className="me-1" /> {isEdit ? 'Actualizar' : 'Guardar'}
+                <FaSave /> <span>{isEdit ? 'Actualizar' : 'Guardar'}</span>
               </Button>
             </div>
           </Form>

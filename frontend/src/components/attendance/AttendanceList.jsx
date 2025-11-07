@@ -240,8 +240,7 @@ const AttendanceList = () => {
         actions={(
           <Link to="/attendance/new">
             <Button variant="primary" className="shadow-sm">
-              <Plus size={16} className="me-2" />
-              Registrar Nueva
+              <Plus size={16} /> <span>Registrar Nueva</span>
             </Button>
           </Link>
         )}

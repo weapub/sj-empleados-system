@@ -109,7 +109,7 @@ const DisciplinaryList = () => {
             className="shadow-sm"
             onClick={() => navigate('/disciplinary/new')}
           >
-            <Plus size={16} className="me-1" /> Nueva Medida
+            <Plus size={16} /> <span>Nueva Medida</span>
           </Button>
         )}
       />
@@ -176,9 +176,9 @@ const DisciplinaryList = () => {
                                 variant="success" 
                                 size="sm"
                                 className="shadow-sm"
-                                onClick={() => openViewer(disciplinary.document)}
+                              onClick={() => openViewer(disciplinary.document)}
                               >
-                                <Eye size={16} className="me-1" /> Ver
+                                <Eye size={16} /> <span>Ver</span>
                               </Button>
                             ) : (
                               'No disponible'

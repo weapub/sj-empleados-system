@@ -74,8 +74,7 @@ const EmployeeList = () => {
         actions={(
           <Link to="/employees/new" className="d-none d-md-inline-flex">
             <Button variant="primary" className="shadow-sm">
-              <Plus size={16} className="me-2" />
-              Nuevo Empleado
+              <Plus size={16} /> <span>Nuevo Empleado</span>
             </Button>
           </Link>
         )}
@@ -155,8 +154,7 @@ const EmployeeList = () => {
             <div className="d-md-none mb-3">
               <Link to="/employees/new">
                 <Button variant="primary" size="sm" className="w-100 shadow-sm">
-                  <Plus size={16} className="me-2" />
-                  Nuevo Empleado
+                  <Plus size={16} /> <span>Nuevo Empleado</span>
                 </Button>
               </Link>
             </div>
