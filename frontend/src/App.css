@@ -2496,4 +2496,16 @@ button.btn.btn-sm {
   .mobile-card-header {
     margin-bottom: 0.5rem;
   }
+
+  /* Compactar márgenes verticales entre secciones en móvil */
+  .page-header {
+    margin-bottom: 0.75rem;
+  }
+  .section-card {
+    margin-bottom: 0.75rem;
+  }
+  /* Especificidad para sobreescribir mb-3 del MobileCard en móvil */
+  .mobile-card.mb-3 {
+    margin-bottom: 0.5rem;
+  }
 }
