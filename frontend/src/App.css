@@ -2143,7 +2143,7 @@ input[type="month"] {
 
   /* MobileCard */
   .mobile-card .mobile-card-header { padding-bottom: 0.25rem; }
-  .mobile-card .card-body { padding: 0.6rem; }
+  .mobile-card .card-body { padding: 0.5rem 0.6rem; }
   .mobile-card-field { padding: 0.12rem 0; }
   .mobile-card .mobile-card-actions .btn { padding: 0.28rem 0.48rem; }
   .mobile-view .mobile-card, .mobile-card { margin-bottom: 0.5rem; }
