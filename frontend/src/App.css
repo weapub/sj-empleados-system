@@ -2486,7 +2486,7 @@ button.btn.btn-sm {
     padding-right: 0.75rem;
   }
   .section-card .card-body {
-    padding: 0.6rem 0.75rem;
+    padding: 0.5rem 0.6rem;
   }
 
   /* MobileCard: reducir padding interno del body para mayor área útil */
