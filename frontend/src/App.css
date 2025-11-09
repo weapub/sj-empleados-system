@@ -2493,10 +2493,10 @@ button.btn.btn-sm {
 
   /* SectionCard: compactar paddings internos en móvil */
   .section-card .section-card-header {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
   }
   .section-card .card-body {
     padding: 0.5rem 0.6rem;
