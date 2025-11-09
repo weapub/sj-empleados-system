@@ -2498,6 +2498,15 @@ button.btn.btn-sm {
     padding-left: 0.6rem;
     padding-right: 0.6rem;
   }
+  /* Tipografías más compactas en encabezado de SectionCard (XS) */
+  .section-card .section-card-header h5 {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+  }
+  .section-card .section-card-header small {
+    font-size: clamp(0.82rem, 1.8vw, 0.95rem);
+    line-height: 1.3;
+    opacity: 0.9;
+  }
   .section-card .card-body {
     padding: 0.5rem 0.6rem;
   }
