@@ -1542,6 +1542,17 @@ input[type="month"] {
   .table th, .table td {
     padding: 0.5rem 0.25rem;
   }
+
+  /* Tablas específicas en XS: mayor densidad controlada */
+  .attendance-table th, .attendance-table td,
+  .payroll-table th, .payroll-table td,
+  .disciplinary-table th, .disciplinary-table td,
+  .employee-table th, .employee-table td {
+    padding: 0.4rem 0.22rem;
+    font-size: 0.74rem;
+    white-space: normal;
+    word-break: break-word;
+  }
   
   /* Mobile card improvements for extra small screens */
   .mobile-card-field {
