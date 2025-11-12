@@ -164,6 +164,10 @@
 .btn-outline-primary:hover {
   background-color: color-mix(in srgb, var(--leaflet-accent, var(--primary-color, #3b82f6)) 12%, #ffffff) !important;
 }
+/* Active ligeramente más marcado para feedback claro */
+.btn-outline-primary:active, .btn-outline-primary.active {
+  background-color: color-mix(in srgb, var(--leaflet-accent, var(--primary-color, #3b82f6)) 20%, #ffffff) !important;
+}
 
 /* Estados: hover, active, focus y disabled */
 .btn:hover, .btn:active {
@@ -238,6 +242,11 @@
   background-color: #f8fafc !important; /* suave neutro */
   color: var(--text-primary, #0f172a) !important;
 }
+/* Active con un neutro un poco más oscuro */
+.btn-outline-secondary:active, .btn-outline-secondary.active {
+  background-color: #f1f5f9 !important;
+  color: var(--text-primary, #0f172a) !important;
+}
 .btn-outline-secondary:focus-visible {
   box-shadow: 0 0 0 0.2rem rgba(100, 116, 139, 0.25) !important; /* slate */
 }
@@ -254,6 +263,10 @@
 }
 .btn-outline-success:hover {
   background-color: color-mix(in srgb, var(--success-color, #10b981) 12%, #ffffff) !important;
+}
+/* Active ligeramente más marcado */
+.btn-outline-success:active, .btn-outline-success.active {
+  background-color: color-mix(in srgb, var(--success-color, #10b981) 20%, #ffffff) !important;
 }
 .btn-outline-success:focus-visible {
   box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
@@ -272,6 +285,10 @@
 .btn-outline-warning:hover {
   background-color: color-mix(in srgb, var(--warning-color, #f59e0b) 12%, #ffffff) !important;
 }
+/* Active ligeramente más marcado */
+.btn-outline-warning:active, .btn-outline-warning.active {
+  background-color: color-mix(in srgb, var(--warning-color, #f59e0b) 20%, #ffffff) !important;
+}
 .btn-outline-warning:focus-visible {
   box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25) !important;
 }
@@ -289,6 +306,10 @@
 .btn-outline-danger:hover {
   background-color: color-mix(in srgb, var(--danger-color, #ef4444) 12%, #ffffff) !important;
 }
+/* Active ligeramente más marcado */
+.btn-outline-danger:active, .btn-outline-danger.active {
+  background-color: color-mix(in srgb, var(--danger-color, #ef4444) 20%, #ffffff) !important;
+}
 .btn-outline-danger:focus-visible {
   box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important;
 }
@@ -305,6 +326,10 @@
 }
 .btn-outline-info:hover {
   background-color: color-mix(in srgb, var(--info-color, #3b82f6) 12%, #ffffff) !important;
+}
+/* Active ligeramente más marcado */
+.btn-outline-info:active, .btn-outline-info.active {
+  background-color: color-mix(in srgb, var(--info-color, #3b82f6) 20%, #ffffff) !important;
 }
 .btn-outline-info:focus-visible {
   box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
