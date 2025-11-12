@@ -157,7 +157,7 @@
 
 /* Outline coherente */
 .btn-outline-primary {
-  border: 1px solid var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
+  border: none !important; /* ghost: sin borde */
   color: var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
   background-color: transparent !important;
 }
@@ -230,12 +230,12 @@
 
 /* Variantes outline planas y coherentes */
 .btn-outline-secondary {
-  border: 1px solid var(--border-color, #e5e7eb) !important;
+  border: none !important; /* ghost */
   color: var(--text-primary, #0f172a) !important;
   background-color: transparent !important;
 }
 .btn-outline-secondary:hover {
-  background-color: #f8fafc !important;
+  background-color: #f8fafc !important; /* suave neutro */
   color: var(--text-primary, #0f172a) !important;
 }
 .btn-outline-secondary:focus-visible {
@@ -248,7 +248,7 @@
 }
 
 .btn-outline-success {
-  border: 1px solid var(--success-color, #10b981) !important;
+  border: none !important;
   color: var(--success-color, #10b981) !important;
   background-color: transparent !important;
 }
@@ -265,7 +265,7 @@
 }
 
 .btn-outline-warning {
-  border: 1px solid var(--warning-color, #f59e0b) !important;
+  border: none !important;
   color: var(--warning-color, #f59e0b) !important;
   background-color: transparent !important;
 }
@@ -282,7 +282,7 @@
 }
 
 .btn-outline-danger {
-  border: 1px solid var(--danger-color, #ef4444) !important;
+  border: none !important;
   color: var(--danger-color, #ef4444) !important;
   background-color: transparent !important;
 }
@@ -299,7 +299,7 @@
 }
 
 .btn-outline-info {
-  border: 1px solid var(--info-color, #3b82f6) !important;
+  border: none !important;
   color: var(--info-color, #3b82f6) !important;
   background-color: transparent !important;
 }
