@@ -2326,8 +2326,8 @@ input[type="month"] {
   top: 0;
   width: 6px;
   height: 100%;
-  background: linear-gradient(180deg, var(--primary-dark), var(--accent-color));
-  opacity: 0.75;
+  background: linear-gradient(180deg, var(--kpi-accent, var(--primary-dark)), color-mix(in srgb, var(--kpi-accent, var(--accent-color)) 70%, transparent));
+  opacity: 0.9;
 }
 .kpi-card.leaflet::after {
   content: '';

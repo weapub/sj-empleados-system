@@ -19,7 +19,12 @@ const MetricCardAlt = ({
   const deltaSymbol = isDown ? '▼' : '▲';
 
   const CardInner = (
-      <Card className="kpi-card leaflet h-100" style={{ cursor: to || onClick ? 'pointer' : 'default' }} onClick={onClick} aria-busy={loading}>
+      <Card
+        className="kpi-card leaflet h-100"
+        style={{ cursor: to || onClick ? 'pointer' : 'default', ['--kpi-accent']: color }}
+        onClick={onClick}
+        aria-busy={loading}
+      >
         <Card.Body className="p-4">
           <div className="d-flex align-items-center justify-content-between mb-2">
             <div className="kpi-icon" style={{ borderColor: color }}>
