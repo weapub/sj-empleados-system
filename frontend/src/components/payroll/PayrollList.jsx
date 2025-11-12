@@ -209,7 +209,7 @@ const PayrollList = () => {
       <div className="section-box mb-3">
       <div className="section-band" />
       <div className="p-3 p-md-4">
-      <SectionCard title="Filtros" icon={<Receipt size={20} />} className="mb-0">
+<SectionCard title="Filtros" icon={<Receipt size={20} />} className="mb-0" accentColor="#10b981">
         <Row className="g-3 align-items-end">
           <Col md={6}>
             <Form.Group>
@@ -254,7 +254,7 @@ const PayrollList = () => {
             <div className="section-box">
             <div className="section-band" />
             <div className="p-3 p-md-4">
-          <SectionCard title="Listado" icon={<Receipt size={20} />}>
+<SectionCard title="Listado" icon={<Receipt size={20} />} accentColor="#10b981">
             <div className="table-responsive">
             <Table hover responsive className="payroll-table mb-0 align-middle text-sm">
               <thead>
@@ -360,6 +360,7 @@ const PayrollList = () => {
                     key={r._id}
                     title={r.employee ? `${r.employee.nombre} ${r.employee.apellido}` : 'Sin empleado'}
                     subtitle={`Legajo: ${r.employee?.legajo || '-'}`}
+                    accentColor="#10b981"
                     fields={[
                       { label: 'Período', value: formatPeriod(r.period) },
                       { label: 'Fecha de Pago', value: formatDate(r.paymentDate) },

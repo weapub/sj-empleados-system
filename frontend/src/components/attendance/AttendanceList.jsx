@@ -250,7 +250,7 @@ const AttendanceList = () => {
         <div className="section-box mb-4">
         <div className="section-band" />
         <div className="p-3 p-md-4">
-        <SectionCard title="Filtros" icon={<Clock size={20} />}>
+<SectionCard title="Filtros" icon={<Clock size={20} />} accentColor="#f59e0b"> 
         <Row className="mb-3 align-items-end">
           <Col md={4}>
             <Form.Group>
@@ -316,7 +316,7 @@ const AttendanceList = () => {
           <div className="section-box">
           <div className="section-band" />
           <div className="p-3 p-md-4">
-          <SectionCard title="Listado" icon={<Clock size={20} />}>
+<SectionCard title="Listado" icon={<Clock size={20} />} accentColor="#f59e0b"> 
           <div className="table-responsive">
           <Table hover responsive className="attendance-table mb-0 align-middle text-sm">
             <thead>
@@ -523,6 +523,7 @@ const AttendanceList = () => {
                   <MobileCard
                     title={attendance.employee ? `${attendance.employee.nombre} ${attendance.employee.apellido}` : 'Empleado desconocido'}
                     subtitle={`Legajo: ${attendance.employee?.legajo || '-'}`}
+                    accentColor="#f59e0b"
                     fields={fields}
                     badges={badges}
                     actions={actions}

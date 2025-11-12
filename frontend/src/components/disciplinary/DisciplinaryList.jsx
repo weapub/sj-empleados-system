@@ -127,7 +127,7 @@ const DisciplinaryList = () => {
           <div className="section-box">
             <div className="section-band" />
             <div className="p-3 p-md-4">
-              <SectionCard title="Listado" icon={<Gavel size={20} />}>
+<SectionCard title="Listado" icon={<Gavel size={20} />} accentColor="#ef4444"> 
               <div className="table-responsive">
                 <Table hover responsive className="disciplinary-table mb-0 align-middle text-sm">
                   <thead>
@@ -227,6 +227,7 @@ const DisciplinaryList = () => {
                   key={d._id}
                   title={d.employee ? `${d.employee.nombre} ${d.employee.apellido}` : 'Empleado no disponible'}
                   subtitle={`Legajo: ${d.employee?.legajo || '-'}`}
+                  accentColor="#ef4444"
                   badges={[{ text: getTypeText(d.type) || 'N/A', variant: getBadgeColor(d.type) }]}
                   fields={[
                     { label: 'Fecha', value: formatDate(d.date) },

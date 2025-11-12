@@ -91,7 +91,7 @@ const EmployeeList = () => {
           <div className="section-box">
             <div className="section-band" />
             <div className="p-3 p-md-4">
-              <SectionCard title="Listado" icon={<Users size={20} />}>
+  <SectionCard title="Listado" icon={<Users size={20} />} accentColor="#3b82f6">
               <div className="table-responsive">
                 <Table hover responsive className="employee-table mb-0 align-middle text-sm">
                   <thead>
@@ -163,6 +163,7 @@ const EmployeeList = () => {
                 key={employee._id}
                 title={`${employee.nombre} ${employee.apellido}`}
                 subtitle={`Legajo: ${employee.legajo || '-'}`}
+                accentColor="#3b82f6"
                 fields={[
                   { label: 'Puesto', value: employee.puesto || 'No especificado' },
                   { label: 'Departamento', value: employee.departamento || 'No especificado' }
