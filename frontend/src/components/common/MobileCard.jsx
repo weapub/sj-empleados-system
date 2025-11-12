@@ -7,11 +7,12 @@ const MobileCard = ({
   fields = [], 
   badges = [], 
   actions = [], 
-  className = '' 
+  className = '',
+  accentColor = '#64748b'
 }) => {
   return (
-    <Card className={`mobile-card mb-3 ${className}`}>
-      <Card.Body>
+    <Card className={`mobile-card leaflet-panel mb-3 ${className}`} style={{ ['--leaflet-accent']: accentColor }}>
+      <Card.Body className="leaflet-body">
         {/* Header con título y subtítulo */}
         <div className="mobile-card-header mb-3">
           <h6 className="mobile-card-title mb-1">{title}</h6>

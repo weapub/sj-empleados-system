@@ -34,3 +34,39 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Componentes Tailwind + CSS para estilo leaflet global */
+@layer components {
+  .leaflet-panel {
+    @apply bg-white rounded-xl shadow-md border border-slate-200/70 relative overflow-hidden;
+  }
+  .leaflet-header {
+    @apply bg-white rounded-t-xl px-4 py-3 border-b border-slate-200/60;
+  }
+  .leaflet-body {
+    @apply p-4;
+  }
+}
+
+/* Acento lateral y esquina doblada del panel leaflet */
+.leaflet-panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--leaflet-accent, var(--primary-dark)), color-mix(in srgb, var(--leaflet-accent, var(--accent-color)) 70%, transparent));
+  opacity: 0.9;
+}
+.leaflet-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 16px solid rgba(241,245,249,0.95);
+  border-left: 16px solid transparent;
+  filter: drop-shadow(0 1px 1px rgba(15,23,42,0.06));
+}

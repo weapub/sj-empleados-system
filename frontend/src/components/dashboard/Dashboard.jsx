@@ -110,14 +110,14 @@ const Dashboard = () => {
       </div>
 
       {/* Acciones rápidas */}
-      <Card className="quick-actions-card shadow-sm border border-slate-200/70 rounded-xl">
-        <Card.Header className="bg-white rounded-t-xl">
+      <Card className="quick-actions-card leaflet-panel" style={{ ['--leaflet-accent']: '#0891b2' }}>
+        <Card.Header className="leaflet-header">
           <h3 className="mb-0 font-semibold text-slate-700 inline-flex items-center gap-2">
             <Users size={20} />
             <span>Acciones Rápidas</span>
           </h3>
         </Card.Header>
-        <Card.Body className="space-y-2">
+        <Card.Body className="leaflet-body space-y-2">
           <Row className="gy-3">
             <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/employees/new" variant="primary" className="w-100 py-3 rounded-md shadow-sm">

@@ -2,11 +2,11 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 // Tarjeta de sección unificada con título, icono y acciones en el header
-const SectionCard = ({ title, icon = null, headerRight = null, children, className = '' }) => {
+const SectionCard = ({ title, icon = null, headerRight = null, children, className = '', accentColor }) => {
   return (
-    <Card className={`section-card shadow-sm border border-slate-200/70 rounded-xl ${className}`}>
+    <Card className={`section-card leaflet-panel ${className}`} style={accentColor ? { ['--leaflet-accent']: accentColor } : undefined}>
       {(title || icon || headerRight) && (
-        <Card.Header className="section-card-header bg-white rounded-top">
+        <Card.Header className="section-card-header leaflet-header">
           <div className="d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center gap-2">
               {icon && <span className="text-slate-700">{icon}</span>}
@@ -20,7 +20,7 @@ const SectionCard = ({ title, icon = null, headerRight = null, children, classNa
           </div>
         </Card.Header>
       )}
-      <Card.Body>{children}</Card.Body>
+      <Card.Body className="leaflet-body">{children}</Card.Body>
     </Card>
   );
 };
