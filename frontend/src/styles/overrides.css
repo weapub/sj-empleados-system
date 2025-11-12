@@ -10,7 +10,8 @@
 .btn-primary {
   /* Usar el acento de sección si está definido; fallback a color primario */
   background-color: var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
-  border-color: var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
+  background-image: none !important;
+  border-color: transparent !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -21,28 +22,33 @@
   filter: brightness(0.95);
 }
 .btn-secondary {
-  background-color: #ffffff !important;
-  border-color: var(--border-color, #e5e7eb) !important;
-  color: var(--text-primary, #0f172a) !important;
+  background-color: #e5e7eb !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  color: #0f172a !important;
 }
 .btn-success {
   background-color: var(--success-color, #10b981) !important;
-  border-color: var(--success-color, #10b981) !important;
+  background-image: none !important;
+  border-color: transparent !important;
   color: #ffffff !important;
 }
 .btn-warning {
   background-color: var(--warning-color, #f59e0b) !important;
-  border-color: var(--warning-color, #f59e0b) !important;
+  background-image: none !important;
+  border-color: transparent !important;
   color: #111827 !important; /* dark text for accessibility on amber */
 }
 .btn-danger {
   background-color: var(--danger-color, #ef4444) !important;
-  border-color: var(--danger-color, #ef4444) !important;
+  background-image: none !important;
+  border-color: transparent !important;
   color: #ffffff !important;
 }
 .btn-info {
-  background-color: var(--info-color, #3b82f6) !important;
-  border-color: var(--info-color, #3b82f6) !important;
+  background-color: var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
+  background-image: none !important;
+  border-color: transparent !important;
   color: #ffffff !important;
 }
 
@@ -138,13 +144,15 @@
 /* Variantes: primary y secondary coherentes */
 .btn-primary {
   background-color: var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
-  border-color: var(--leaflet-accent, var(--primary-color, #3b82f6)) !important;
+  background-image: none !important;
+  border-color: transparent !important;
   color: #ffffff !important;
 }
 .btn-secondary {
-  background-color: #e2e8f0 !important; /* slate-200 */
-  border-color: #cbd5e1 !important; /* slate-300 */
-  color: #334155 !important; /* slate-700 */
+  background-color: #e5e7eb !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  color: #0f172a !important;
 }
 
 /* Outline coherente */
