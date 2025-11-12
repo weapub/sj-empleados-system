@@ -5,7 +5,7 @@
 
 /* Buttons: consistent semantic colors with safe contrast */
 .btn {
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: none !important; /* bordes removidos para acabado plano */
 }
 .btn-primary {
   /* Usar el acento de sección si está definido; fallback a color primario */
@@ -158,6 +158,9 @@
 }
 
 /* Estados: hover, active, focus y disabled */
+.btn:hover, .btn:active {
+  transform: none !important; /* sin movimiento vertical */
+}
 .btn-primary:hover {
   background-color: color-mix(in srgb, var(--leaflet-accent, var(--primary-color, #3b82f6)) 88%, #000000) !important;
   border-color: color-mix(in srgb, var(--leaflet-accent, var(--primary-color, #3b82f6)) 88%, #000000) !important;
@@ -219,7 +222,7 @@
 
 /* Variantes outline planas y coherentes */
 .btn-outline-secondary {
-  border-color: var(--border-color, #e5e7eb) !important;
+  border: 1px solid var(--border-color, #e5e7eb) !important;
   color: var(--text-primary, #0f172a) !important;
   background-color: transparent !important;
 }
@@ -237,7 +240,7 @@
 }
 
 .btn-outline-success {
-  border-color: var(--success-color, #10b981) !important;
+  border: 1px solid var(--success-color, #10b981) !important;
   color: var(--success-color, #10b981) !important;
   background-color: transparent !important;
 }
@@ -254,7 +257,7 @@
 }
 
 .btn-outline-warning {
-  border-color: var(--warning-color, #f59e0b) !important;
+  border: 1px solid var(--warning-color, #f59e0b) !important;
   color: var(--warning-color, #f59e0b) !important;
   background-color: transparent !important;
 }
@@ -271,7 +274,7 @@
 }
 
 .btn-outline-danger {
-  border-color: var(--danger-color, #ef4444) !important;
+  border: 1px solid var(--danger-color, #ef4444) !important;
   color: var(--danger-color, #ef4444) !important;
   background-color: transparent !important;
 }
@@ -288,7 +291,7 @@
 }
 
 .btn-outline-info {
-  border-color: var(--info-color, #3b82f6) !important;
+  border: 1px solid var(--info-color, #3b82f6) !important;
   color: var(--info-color, #3b82f6) !important;
   background-color: transparent !important;
 }

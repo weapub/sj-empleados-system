@@ -753,7 +753,7 @@ input[type="month"] {
   font-weight: 500;
   padding: 0.625rem 1.25rem;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-color);
+  border: none; /* sin borde en botones por defecto */
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -802,7 +802,6 @@ input[type="month"] {
 
 .btn-outline-primary:hover {
   background: var(--primary-color);
-  transform: translateY(-1px);
 }
 
 /* Outline secondary: texto oscuro y borde neutro global */
