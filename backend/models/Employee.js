@@ -90,4 +90,8 @@ employeeSchema.pre('save', function(next) {
   next();
 });
 
+// Índices útiles para conteos y ordenaciones
+employeeSchema.index({ activo: 1 });
+employeeSchema.index({ apellido: 1, nombre: 1 });
+
 module.exports = mongoose.model('Employee', employeeSchema);

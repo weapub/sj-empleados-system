@@ -71,4 +71,9 @@ const PayrollReceiptSchema = new mongoose.Schema({
   }
 });
 
+// Índices para métricas y consultas por período/empleado
+PayrollReceiptSchema.index({ signed: 1, period: 1 });
+PayrollReceiptSchema.index({ employee: 1, period: 1 });
+PayrollReceiptSchema.index({ period: 1 });
+
 module.exports = mongoose.model('PayrollReceipt', PayrollReceiptSchema);

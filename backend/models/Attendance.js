@@ -86,4 +86,10 @@ const AttendanceSchema = new mongoose.Schema({
   }
 });
 
+// Índices para acelerar consultas frecuentes y conteos
+AttendanceSchema.index({ type: 1, date: -1 });
+AttendanceSchema.index({ lostPresentismo: 1, date: -1 });
+AttendanceSchema.index({ employee: 1, date: -1 });
+AttendanceSchema.index({ returnToWorkDate: 1 });
+
 module.exports = mongoose.model('Attendance', AttendanceSchema);

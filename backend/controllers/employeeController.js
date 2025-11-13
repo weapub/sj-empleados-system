@@ -12,7 +12,8 @@ exports.getEmployees = async (req, res) => {
       Employee.find()
         .sort({ apellido: 1, nombre: 1 })
         .skip((page - 1) * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
       Employee.countDocuments(),
     ]);
 
@@ -26,7 +27,7 @@ exports.getEmployees = async (req, res) => {
 // Obtener un empleado por ID
 exports.getEmployeeById = async (req, res) => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const employee = await Employee.findById(req.params.id).lean();
     if (!employee) {
       return res.status(404).json({ message: 'Empleado no encontrado' });
     }

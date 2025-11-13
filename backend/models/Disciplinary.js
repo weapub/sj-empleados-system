@@ -59,4 +59,10 @@ const DisciplinarySchema = new mongoose.Schema({
   }
 });
 
+// Índices para acelerar filtros y conteos
+DisciplinarySchema.index({ type: 1, date: -1 });
+DisciplinarySchema.index({ employee: 1, date: -1 });
+DisciplinarySchema.index({ signed: 1 });
+DisciplinarySchema.index({ durationDays: 1, returnToWorkDate: 1 });
+
 module.exports = mongoose.model('Disciplinary', DisciplinarySchema);

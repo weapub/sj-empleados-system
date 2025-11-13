@@ -3,11 +3,29 @@ const Attendance = require('../models/Attendance');
 const Disciplinary = require('../models/Disciplinary');
 const PayrollReceipt = require('../models/PayrollReceipt');
 
+// Cache en memoria para métricas del dashboard (TTL 30s) y de-duplicación de solicitudes concurrentes
+const DASHBOARD_CACHE = {
+  data: null,
+  ts: 0,
+  promise: null,
+};
+const TTL_MS = 30_000;
+
 // Obtener todas las métricas para el dashboard
 exports.getDashboardMetrics = async (req, res) => {
   try {
-    // Obtener empleados activos
-    const empleadosActivos = await Employee.countDocuments({ activo: true });
+    const now = Date.now();
+    if (DASHBOARD_CACHE.data && (now - DASHBOARD_CACHE.ts) < TTL_MS) {
+      return res.json(DASHBOARD_CACHE.data);
+    }
+    if (DASHBOARD_CACHE.promise) {
+      const cached = await DASHBOARD_CACHE.promise.catch(() => null);
+      if (cached) return res.json(cached);
+    }
+
+    DASHBOARD_CACHE.promise = (async () => {
+      // Obtener empleados activos
+      const empleadosActivos = await Employee.countDocuments({ activo: true });
     
     // Calcular referencias de fecha (mes actual y anterior)
     const today = new Date();
@@ -118,31 +136,37 @@ exports.getDashboardMetrics = async (req, res) => {
       return null;
     };
 
-    const metrics = {
-      empleadosActivos,
-      inasistenciasMes,
-      tardanzasMes,
-      justificadas,
-      injustificadas,
-      licenciasMedicas,
-      vacaciones,
-      sanciones,
-      sinPresentismo,
-      totalHistorico,
-      apercibimientos,
-      sancionesActivas,
-      recibosPendientes,
-      deltas: {
-        inasistenciasMes: deltaPercent(inasistenciasMes, inasistenciasPrev),
-        tardanzasMes: deltaPercent(tardanzasMes, tardanzasPrev),
-        sinPresentismo: deltaPercent(sinPresentismo, sinPresentismoPrev),
-        apercibimientos: deltaPercent(apercibimientos, apercibimientosPrev),
-        sancionesActivas: deltaPercent(sancionesActivas, sancionesActivasPrev),
-        recibosPendientes: deltaPercent(recibosPendientes, recibosPendientesPrev)
-      }
-    };
+      const metrics = {
+        empleadosActivos,
+        inasistenciasMes,
+        tardanzasMes,
+        justificadas,
+        injustificadas,
+        licenciasMedicas,
+        vacaciones,
+        sanciones,
+        sinPresentismo,
+        totalHistorico,
+        apercibimientos,
+        sancionesActivas,
+        recibosPendientes,
+        deltas: {
+          inasistenciasMes: deltaPercent(inasistenciasMes, inasistenciasPrev),
+          tardanzasMes: deltaPercent(tardanzasMes, tardanzasPrev),
+          sinPresentismo: deltaPercent(sinPresentismo, sinPresentismoPrev),
+          apercibimientos: deltaPercent(apercibimientos, apercibimientosPrev),
+          sancionesActivas: deltaPercent(sancionesActivas, sancionesActivasPrev),
+          recibosPendientes: deltaPercent(recibosPendientes, recibosPendientesPrev)
+        }
+      };
+      DASHBOARD_CACHE.data = metrics;
+      DASHBOARD_CACHE.ts = Date.now();
+      return metrics;
+    })();
 
-    res.json(metrics);
+    const result = await DASHBOARD_CACHE.promise;
+    DASHBOARD_CACHE.promise = null; // liberar
+    return res.json(result);
   } catch (error) {
     console.error('Error al obtener métricas del dashboard:', error);
     res.status(500).json({ msg: 'Error del servidor al obtener métricas' });

@@ -140,8 +140,9 @@ exports.createAttendance = async (req, res) => {
 exports.getAllAttendances = async (req, res) => {
   try {
     const attendances = await Attendance.find()
-      .populate('employee', 'nombre apellido legajo')
-      .sort({ date: -1 });
+      .populate({ path: 'employee', select: 'nombre apellido legajo', options: { lean: true } })
+      .sort({ date: -1 })
+      .lean();
     
     res.json(attendances);
   } catch (error) {
@@ -156,7 +157,8 @@ exports.getAttendancesByEmployee = async (req, res) => {
     const { employeeId } = req.params;
     
     const attendances = await Attendance.find({ employee: employeeId })
-      .sort({ date: -1 });
+      .sort({ date: -1 })
+      .lean();
     
     res.json(attendances);
   } catch (error) {

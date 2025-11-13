@@ -24,6 +24,14 @@ const Login = ({ login: loginUser }) => {
     try {
       const data = await login({ email, password });
       loginUser(data.token);
+      // Prefetch del chunk de Dashboard y warm-up de métricas para render más rápido
+      try {
+        // Cargar el bundle de Dashboard en segundo plano
+        import('../../components/dashboard/Dashboard');
+        // Precargar métricas en segundo plano (cache backend + navegador)
+        const api = await import('../../services/api');
+        api.getDashboardMetrics().catch(() => {});
+      } catch (_) {}
     } catch (err) {
       setError(err.response?.data?.message || 'Error al iniciar sesión');
     } finally {

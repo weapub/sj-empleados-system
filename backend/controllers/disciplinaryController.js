@@ -115,8 +115,9 @@ exports.createDisciplinary = async (req, res) => {
 exports.getAllDisciplinaries = async (req, res) => {
   try {
     const disciplinaries = await Disciplinary.find()
-      .populate('employee', 'nombre apellido legajo')
-      .sort({ date: -1 });
+      .populate({ path: 'employee', select: 'nombre apellido legajo', options: { lean: true } })
+      .sort({ date: -1 })
+      .lean();
     
     res.json(disciplinaries);
   } catch (error) {
@@ -131,7 +132,8 @@ exports.getDisciplinariesByEmployee = async (req, res) => {
     const { employeeId } = req.params;
     
     const disciplinaries = await Disciplinary.find({ employee: employeeId })
-      .sort({ date: -1 });
+      .sort({ date: -1 })
+      .lean();
     
     res.json(disciplinaries);
   } catch (error) {
@@ -144,7 +146,9 @@ exports.getDisciplinariesByEmployee = async (req, res) => {
 exports.getDisciplinaryById = async (req, res) => {
   try {
     const { id } = req.params;
-    const disciplinary = await Disciplinary.findById(id).populate('employee', 'nombre apellido legajo');
+    const disciplinary = await Disciplinary.findById(id)
+      .populate({ path: 'employee', select: 'nombre apellido legajo', options: { lean: true } })
+      .lean();
     if (!disciplinary) {
       return res.status(404).json({ msg: 'Medida disciplinaria no encontrada' });
     }
