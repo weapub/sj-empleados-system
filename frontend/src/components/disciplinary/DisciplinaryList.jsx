@@ -20,15 +20,17 @@ const DisciplinaryList = () => {
   const [pageSize, setPageSize] = useState(50);
   const [serverTotal, setServerTotal] = useState();
   const [serverTotalPages, setServerTotalPages] = useState();
+  const [sortBy, setSortBy] = useState('date');
+  const [sortDir, setSortDir] = useState('desc');
 
   useEffect(() => {
     loadDisciplinaries();
-  }, [page, pageSize]);
+  }, [page, pageSize, sortBy, sortDir]);
 
   const loadDisciplinaries = async () => {
     try {
       setLoading(true);
-      const response = await getAllDisciplinaries({ page, limit: pageSize });
+      const response = await getAllDisciplinaries({ page, limit: pageSize, sortBy, sortDir });
       if (Array.isArray(response)) {
         setDisciplinaries(response);
         setServerTotal(undefined);
@@ -111,7 +113,7 @@ const DisciplinaryList = () => {
   };
 
   return (
-    <Container fluid className="mt-4 px-2 md:px-4">
+    <Container fluid className="mt-4 px-0 md:px-4">
       <PageHeader
         icon={<Gavel size={20} />}
         title="Medidas Disciplinarias"
@@ -142,6 +144,29 @@ const DisciplinaryList = () => {
             <div className="section-band" />
             <div className="p-3 p-md-4">
 <SectionCard title="Listado" icon={<Gavel size={20} />} accentColor="#ef4444"> 
+              <div className="d-flex justify-content-end align-items-center mb-2 gap-2">
+                <label className="text-muted small mb-0">Ordenar por:</label>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="date">Fecha</option>
+                  <option value="employee">Empleado</option>
+                  <option value="type">Tipo</option>
+                  <option value="signed">Firmado</option>
+                  <option value="durationDays">Duración</option>
+                  <option value="returnToWorkDate">Fecha regreso</option>
+                </select>
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+                  title="Cambiar dirección"
+                >
+                  {sortDir === 'asc' ? 'Asc ↑' : 'Desc ↓'}
+                </Button>
+              </div>
               <div className="table-responsive">
                 <Table hover responsive className="disciplinary-table mb-0 align-middle text-sm">
                   <thead>
@@ -258,7 +283,32 @@ const DisciplinaryList = () => {
           </div>
 
           {/* Vista móvil */}
-          <div className="d-md-none">
+          <div className="d-md-none p-0">
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <div className="d-flex align-items-center gap-2">
+                <label className="text-muted small mb-0">Ordenar por:</label>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="date">Fecha</option>
+                  <option value="employee">Empleado</option>
+                  <option value="type">Tipo</option>
+                  <option value="signed">Firmado</option>
+                  <option value="durationDays">Duración</option>
+                  <option value="returnToWorkDate">Fecha regreso</option>
+                </select>
+              </div>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+                title="Cambiar dirección"
+              >
+                {sortDir === 'asc' ? 'Asc ↑' : 'Desc ↓'}
+              </Button>
+            </div>
             {disciplinaries.length > 0 ? (
               disciplinaries.map((d) => (
                 <MobileCard

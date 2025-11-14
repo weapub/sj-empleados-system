@@ -173,15 +173,112 @@ exports.getAllAttendances = async (req, res) => {
       return res.json(attendances);
     }
 
-    const [data, total] = await Promise.all([
-      Attendance.find(filter)
+    const advancedSortKeys = ['employee', 'type', 'status', 'late', 'justified', 'presentismo'];
+
+    let data;
+    if (advancedSortKeys.includes(sortBy)) {
+      // Usar agregación para ordenar por campos derivados o de empleado
+      const pipeline = [
+        { $match: filter },
+        {
+          $lookup: {
+            from: 'employees',
+            localField: 'employee',
+            foreignField: '_id',
+            as: 'employee'
+          }
+        },
+        { $unwind: { path: '$employee', preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            employeeLast: { $ifNull: ['$employee.apellido', ''] },
+            employeeFirst: { $ifNull: ['$employee.nombre', ''] },
+            typePriority: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ['$type', 'inasistencia'] }, then: 4 },
+                  { case: { $eq: ['$type', 'tardanza'] }, then: 3 },
+                  { case: { $eq: ['$type', 'licencia medica'] }, then: 2 },
+                  { case: { $eq: ['$type', 'vacaciones'] }, then: 1 },
+                ],
+                default: 0
+              }
+            },
+            statusScore: {
+              $add: [
+                { $cond: [{ $eq: ['$justified', true] }, 2, 0] },
+                { $cond: [{ $eq: ['$lostPresentismo', true] }, 0, 1] }
+              ]
+            },
+            justifiedScore: { $cond: [{ $eq: ['$justified', true] }, 1, 0] },
+            presentismoScore: { $cond: [{ $eq: ['$lostPresentismo', true] }, 0, 1] },
+            lateScore: { $ifNull: ['$lateMinutes', 0] }
+          }
+        }
+      ];
+
+      let sortStage = { $sort: { date: -1 } };
+      switch (sortBy) {
+        case 'employee':
+          sortStage = { $sort: { employeeLast: sortDir, employeeFirst: sortDir, date: -1 } };
+          break;
+        case 'type':
+          sortStage = { $sort: { typePriority: sortDir, date: -1 } };
+          break;
+        case 'status':
+          sortStage = { $sort: { statusScore: sortDir, date: -1 } };
+          break;
+        case 'justified':
+          sortStage = { $sort: { justifiedScore: sortDir, date: -1 } };
+          break;
+        case 'presentismo':
+          sortStage = { $sort: { presentismoScore: sortDir, date: -1 } };
+          break;
+        case 'late':
+          sortStage = { $sort: { lateScore: sortDir, date: -1 } };
+          break;
+        default:
+          sortStage = { $sort: { date: sortDir } };
+      }
+
+      pipeline.push(sortStage);
+      if (limit > 0) {
+        pipeline.push({ $skip: (page - 1) * limit });
+        pipeline.push({ $limit: limit });
+      }
+
+      // Proyectar sólo los campos necesarios del empleado
+      pipeline.push({
+        $project: {
+          'employee.nombre': 1,
+          'employee.apellido': 1,
+          'employee.legajo': 1,
+          type: 1,
+          date: 1,
+          justified: 1,
+          lostPresentismo: 1,
+          lateMinutes: 1,
+          certificateExpiry: 1,
+          vacationsStart: 1,
+          vacationsEnd: 1,
+          returnToWorkDate: 1,
+          scheduledEntry: 1,
+          actualEntry: 1,
+          comments: 1
+        }
+      });
+
+      data = await Attendance.aggregate(pipeline);
+    } else {
+      data = await Attendance.find(filter)
         .populate({ path: 'employee', select: 'nombre apellido legajo', options: { lean: true } })
         .sort(sort)
         .skip(limit > 0 ? (page - 1) * limit : 0)
         .limit(limit > 0 ? limit : 0)
-        .lean(),
-      Attendance.countDocuments(filter),
-    ]);
+        .lean();
+    }
+
+    const total = await Attendance.countDocuments(filter);
 
     const totalPages = limit > 0 ? Math.max(Math.ceil(total / limit), 1) : 1;
     res.status(200).json({ data, total, page, totalPages });

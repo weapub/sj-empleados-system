@@ -35,66 +35,66 @@ const NavbarComponent = ({ isAuthenticated, logout }) => {
                   as={NavLink}
                   to="/"
                   end
-                  className={({ isActive }) => `inline-flex items-center gap-2 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50'}`}
+                  className={({ isActive }) => `inline-flex items-center gap-2 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50 hover:text-white'}`}
                   style={({ isActive }) => (isActive ? { backgroundColor: 'var(--leaflet-accent)', color: '#fff' } : undefined)}
                 >
                   {({ isActive }) => (<>
                     <span className="mr-2" style={isActive ? { color: 'rgba(255,255,255,0.92)' } : undefined}>
                       <FaChartLine size={isActive ? 18 : 16} />
                     </span>
-                    <span>Dashboard</span>
+                    <span style={isActive ? { color: '#ffffff' } : undefined}>Dashboard</span>
                   </>)}
                 </Nav.Link>
                 <Nav.Link
                   as={NavLink}
                   to="/employees"
-                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50'}`}
+                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50 hover:text-white'}`}
                   style={({ isActive }) => (isActive ? { backgroundColor: 'var(--leaflet-accent)', color: '#fff' } : undefined)}
                 >
                   {({ isActive }) => (<>
                     <span className="mr-2" style={isActive ? { color: 'rgba(255,255,255,0.92)' } : undefined}>
                       <FaUsers size={isActive ? 18 : 16} />
                     </span>
-                    <span>Empleados</span>
+                    <span style={isActive ? { color: '#ffffff' } : undefined}>Empleados</span>
                   </>)}
                 </Nav.Link>
                 <Nav.Link
                   as={NavLink}
                   to="/disciplinary"
-                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50'}`}
+                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50 hover:text-white'}`}
                   style={({ isActive }) => (isActive ? { backgroundColor: 'var(--leaflet-accent)', color: '#fff' } : undefined)}
                 >
                   {({ isActive }) => (<>
                     <span className="mr-2" style={isActive ? { color: 'rgba(255,255,255,0.92)' } : undefined}>
                       <FaExclamationTriangle size={isActive ? 18 : 16} />
                     </span>
-                    <span>Medidas Disciplinarias</span>
+                    <span style={isActive ? { color: '#ffffff' } : undefined}>Medidas Disciplinarias</span>
                   </>)}
                 </Nav.Link>
                 <Nav.Link
                   as={NavLink}
                   to="/attendance"
-                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50'}`}
+                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50 hover:text-white'}`}
                   style={({ isActive }) => (isActive ? { backgroundColor: 'var(--leaflet-accent)', color: '#fff' } : undefined)}
                 >
                   {({ isActive }) => (<>
                     <span className="mr-2" style={isActive ? { color: 'rgba(255,255,255,0.92)' } : undefined}>
                       <FaClock size={isActive ? 18 : 16} />
                     </span>
-                    <span>Asistencias</span>
+                    <span style={isActive ? { color: '#ffffff' } : undefined}>Asistencias</span>
                   </>)}
                 </Nav.Link>
                 <Nav.Link
                   as={NavLink}
                   to="/payroll"
-                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50'}`}
+                  className={({ isActive }) => `inline-flex items-center gap-4 px-3 py-1 rounded-full ${isActive ? 'text-white shadow-sm' : 'text-slate-700 hover:bg-slate-50 hover:text-white'}`}
                   style={({ isActive }) => (isActive ? { backgroundColor: 'var(--leaflet-accent)', color: '#fff' } : undefined)}
                 >
                   {({ isActive }) => (<>
                     <span className="mr-2" style={isActive ? { color: 'rgba(255,255,255,0.92)' } : undefined}>
                       <FaFileInvoiceDollar size={isActive ? 18 : 16} />
                     </span>
-                    <span>Recibos</span>
+                    <span style={isActive ? { color: '#ffffff' } : undefined}>Recibos</span>
                   </>)}
                 </Nav.Link>
                 <Nav.Link
@@ -107,7 +107,7 @@ const NavbarComponent = ({ isAuthenticated, logout }) => {
                     <span className="mr-2" style={isActive ? { color: 'rgba(255,255,255,0.92)' } : undefined}>
                       <FaWallet size={isActive ? 18 : 16} />
                     </span>
-                    <span>Cuenta Corriente</span>
+                    <span style={isActive ? { color: '#ffffff' } : undefined}>Cuenta Corriente</span>
                   </>)}
                 </Nav.Link>
                 <Button variant="outline-dark" onClick={logout} className="ms-2 shadow-sm rounded-full px-3 py-1">

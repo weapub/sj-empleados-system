@@ -183,7 +183,7 @@ const PayrollList = () => {
   };
 
   return (
-    <Container fluid className="mt-4 px-2 md:px-4">
+    <Container fluid className="mt-4 px-0 md:px-4">
       <PageHeader
         icon={<Receipt size={20} />}
         title="Recibos de Sueldo"

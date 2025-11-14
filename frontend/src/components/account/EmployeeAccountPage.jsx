@@ -129,7 +129,7 @@ const EmployeeAccountPage = () => {
   };
 
   return (
-    <Container fluid className="px-2 md:px-4 mt-4">
+    <Container fluid className="px-0 md:px-4 mt-4">
       <PageHeader
         icon={<FaWallet />}
         title="Cuenta Corriente del Empleado"

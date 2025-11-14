@@ -66,7 +66,7 @@ const EmployeeList = () => {
   }
 
   return (
-    <div className="container-fluid px-2 md:px-4 space-y-4">
+    <div className="container-fluid px-0 md:px-4 space-y-4">
       <PageHeader
         icon={<Users size={20} />}
         title="Empleados"

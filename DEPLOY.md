@@ -28,10 +28,11 @@ Este documento complementa el README con pasos prácticos para producción.
 - Build: `npm install && npm run build`
 - Output: `dist/`
 - Dominio de producción: `https://sj-empleados-system.vercel.app/`
-- Env vars (Project Settings → Environment Variables):
-  - `VITE_API_URL=https://tu-backend.onrender.com` (sin sufijo `/api`; el cliente lo agrega)
-  - Si ves "Login – Vercel" y el `manifest.json` responde `401`, desactiva **Preview Protection** en Vercel o usa un dominio de producción público.
-  - Asegúrate de definir variables en Production y Preview.
+ - Env vars:
+   - Gestionadas automáticamente en `vercel.json` (build.env): `VITE_API_URL=https://sj-empleados-system.onrender.com`.
+   - Alternativa: definir en Project Settings → Environment Variables (Production/Preview) si prefieres gestionar desde Vercel.
+ - SPA routing:
+   - `vercel.json` incluye `rewrites` para servir `index.html` en rutas internas.
 
 ## 9) Despliegue por GitHub Actions (Vercel)
 
@@ -52,6 +53,13 @@ En el repo: `Settings → Secrets and variables → Actions`, añade estos secre
 - `VERCEL_ORG_ID` → ID de tu organización en Vercel.
 - `VERCEL_PROJECT_ID` → ID del proyecto en Vercel.
 
+Checklist de configuración (Producción):
+- En Vercel, crea el proyecto apuntando al repo.
+- Root Directory: `frontend`.
+- `vercel.json` presente en `frontend/` con `@vercel/static-build`, `distDir: dist`, `rewrites` y `build.env`.
+- Secrets en GitHub configurados (`VERCEL_*`).
+- Backend con CORS permitiendo el dominio de Vercel.
+
 Los workflows usan `working-directory: frontend` y la acción `amondnet/vercel-action@v25`, por lo que no necesitas modificar comandos.
 
 ### Disparar despliegues
@@ -65,6 +73,8 @@ Los workflows usan `working-directory: frontend` y la acción `amondnet/vercel-a
 - Verifica el backend público (Render/Koyeb/Railway):
   - `GET /` → debe responder OK
   - `GET /api/_debug/routes` → lista las rutas
+
+Nota: El frontend genera las llamadas a `${VITE_API_URL}/api/...`, por lo que `VITE_API_URL` debe apuntar a la URL base sin sufijo `/api`.
 
 ### Validaciones rápidas
 - Abre la URL de Vercel y confirma que el login funciona y las páginas protegidas muestran datos.

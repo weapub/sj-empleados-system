@@ -146,15 +146,83 @@ exports.getAllDisciplinaries = async (req, res) => {
       return res.json(disciplinaries);
     }
 
-    const [data, total] = await Promise.all([
-      Disciplinary.find(filter)
+    const advancedSortKeys = ['employee', 'type', 'signed', 'durationDays', 'returnToWorkDate'];
+
+    let data;
+    if (advancedSortKeys.includes(sortBy)) {
+      const pipeline = [
+        { $match: filter },
+        {
+          $lookup: {
+            from: 'employees',
+            localField: 'employee',
+            foreignField: '_id',
+            as: 'employee'
+          }
+        },
+        { $unwind: { path: '$employee', preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            employeeLast: { $ifNull: ['$employee.apellido', ''] },
+            employeeFirst: { $ifNull: ['$employee.nombre', ''] },
+            signedScore: { $cond: [{ $eq: ['$signed', true] }, 1, 0] },
+          }
+        }
+      ];
+
+      let sortStage = { $sort: { date: -1 } };
+      switch (sortBy) {
+        case 'employee':
+          sortStage = { $sort: { employeeLast: sortDir, employeeFirst: sortDir, date: -1 } };
+          break;
+        case 'type':
+          // Orden alfabético por tipo
+          sortStage = { $sort: { type: sortDir, date: -1 } };
+          break;
+        case 'signed':
+          sortStage = { $sort: { signedScore: sortDir, date: -1 } };
+          break;
+        case 'durationDays':
+          sortStage = { $sort: { durationDays: sortDir, date: -1 } };
+          break;
+        case 'returnToWorkDate':
+          sortStage = { $sort: { returnToWorkDate: sortDir, date: -1 } };
+          break;
+        default:
+          sortStage = { $sort: { date: sortDir } };
+      }
+
+      pipeline.push(sortStage);
+      if (limit > 0) {
+        pipeline.push({ $skip: (page - 1) * limit });
+        pipeline.push({ $limit: limit });
+      }
+
+      pipeline.push({
+        $project: {
+          'employee.nombre': 1,
+          'employee.apellido': 1,
+          'employee.legajo': 1,
+          type: 1,
+          date: 1,
+          signed: 1,
+          durationDays: 1,
+          comments: 1,
+          returnToWorkDate: 1
+        }
+      });
+
+      data = await Disciplinary.aggregate(pipeline);
+    } else {
+      data = await Disciplinary.find(filter)
         .populate({ path: 'employee', select: 'nombre apellido legajo', options: { lean: true } })
         .sort(sort)
         .skip(limit > 0 ? (page - 1) * limit : 0)
         .limit(limit > 0 ? limit : 0)
-        .lean(),
-      Disciplinary.countDocuments(filter),
-    ]);
+        .lean();
+    }
+
+    const total = await Disciplinary.countDocuments(filter);
 
     const totalPages = limit > 0 ? Math.max(Math.ceil(total / limit), 1) : 1;
     res.status(200).json({ data, total, page, totalPages });
