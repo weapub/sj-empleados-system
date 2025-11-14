@@ -1682,7 +1682,7 @@ input[type="month"] {
 }
 .theme-soft-glass .navbar .navbar-brand,
 .theme-soft-glass .navbar .nav-link {
-  color: var(--text-secondary) !important;
+  color: #ffffff !important;
 }
 .theme-soft-glass .navbar .nav-link:hover {
   color: var(--text-primary) !important;
