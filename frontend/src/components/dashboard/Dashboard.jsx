@@ -35,14 +35,16 @@ const Dashboard = () => {
   const [sendingReport, setSendingReport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewData, setPreviewData] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(''); // YYYY-MM (opcional)
+  const [modalMonth, setModalMonth] = useState(''); // YYYY-MM dentro del modal
+  const [refreshingPreview, setRefreshingPreview] = useState(false);
 
   const handleSendPresentismoReport = async () => {
     try {
       setSendingReport(true);
       // Primero obtener previsualización
-      const preview = await previewPresentismoWhatsAppReport(selectedMonth || undefined);
+      const preview = await previewPresentismoWhatsAppReport(undefined);
       setPreviewData(preview);
+      setModalMonth(preview?.month || '');
       setShowPreview(true);
     } catch (e) {
       Swal.fire({
@@ -55,10 +57,26 @@ const Dashboard = () => {
     }
   };
 
+  const refreshPreview = async () => {
+    try {
+      setRefreshingPreview(true);
+      const preview = await previewPresentismoWhatsAppReport(modalMonth || undefined);
+      setPreviewData(preview);
+    } catch (e) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pudo actualizar la previsualización',
+        text: e?.response?.data?.msg || e.message || 'Error desconocido',
+      });
+    } finally {
+      setRefreshingPreview(false);
+    }
+  };
+
   const confirmSendReport = async () => {
     try {
       setSendingReport(true);
-      const res = await sendPresentismoWhatsAppReport(selectedMonth || undefined);
+      const res = await sendPresentismoWhatsAppReport(modalMonth || undefined);
       setShowPreview(false);
       setPreviewData(null);
       Swal.fire({
@@ -182,15 +200,6 @@ const Dashboard = () => {
         <Card.Body className="leaflet-body space-y-2">
           <Row className="gy-3">
             <Col lg={3} md={6} className="mb-3">
-              <Form.Label className="mb-1">Mes del informe</Form.Label>
-              <Form.Control
-                type="month"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="w-100 py-2 rounded-md shadow-sm"
-              />
-            </Col>
-            <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/employees/new" variant="primary" className="w-100 py-3 rounded-md shadow-sm">
                 <UserCheck size={20} /> <span>Nuevo Empleado</span>
               </Button>
@@ -236,7 +245,21 @@ const Dashboard = () => {
               <div className="modal-body">
                 {previewData ? (
                   <div>
-                    <p className="text-muted">Mes: {previewData.month}</p>
+                    <div className="mb-3">
+                      <Form.Label className="mb-1">Mes del informe</Form.Label>
+                      <div className="d-flex gap-2">
+                        <Form.Control
+                          type="month"
+                          value={modalMonth}
+                          onChange={(e) => setModalMonth(e.target.value)}
+                          className="py-2 rounded-md shadow-sm"
+                          style={{ maxWidth: '220px' }}
+                        />
+                        <Button variant="outline-secondary" onClick={refreshPreview} disabled={refreshingPreview}>
+                          {refreshingPreview ? 'Actualizando...' : 'Actualizar previsualización'}
+                        </Button>
+                      </div>
+                    </div>
                     <p className="mb-2">Empleados sin presentismo: {previewData.totalEmployees}</p>
                     {Array.isArray(previewData.employees) && previewData.employees.length > 0 ? (
                       <ul className="list-group mb-3">
