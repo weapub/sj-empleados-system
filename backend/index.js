@@ -118,19 +118,28 @@ app.get('/', (req, res) => {
 async function startServer() {
   const port = process.env.PORT || 5000;
   const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/empleados_db';
+  const isProd = String(process.env.NODE_ENV || '').toLowerCase() === 'production';
+  const dbName = process.env.DB_NAME || undefined; // fuerza nombre de base si MONGO_URI no lo tiene
   try {
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000,
       connectTimeoutMS: 5000,
+      dbName,
     });
     console.log(`[DB] Conectado a MongoDB: ${mongoUri}`);
   } catch (err) {
-    console.error('[DB] Error conectando a MongoDB local:', err.message);
-    console.log('[DB] Iniciando MongoDB en memoria (solo desarrollo)');
-    const memServer = await MongoMemoryServer.create();
-    const memUri = memServer.getUri();
-    await mongoose.connect(memUri);
-    console.log(`[DB] Conectado a MongoDB en memoria: ${memUri}`);
+    if (isProd) {
+      console.error('[DB] Error conectando a MongoDB en producción:', err.message);
+      console.error('[DB] Abortando inicio para evitar usar base en memoria en producción');
+      process.exit(1);
+    } else {
+      console.error('[DB] Error conectando a MongoDB local:', err.message);
+      console.log('[DB] Iniciando MongoDB en memoria (solo desarrollo)');
+      const memServer = await MongoMemoryServer.create();
+      const memUri = memServer.getUri();
+      await mongoose.connect(memUri);
+      console.log(`[DB] Conectado a MongoDB en memoria: ${memUri}`);
+    }
   }
   // Seed de usuario admin por defecto (solo si está habilitado)
   await seedDefaultAdmin();
