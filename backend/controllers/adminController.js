@@ -151,12 +151,21 @@ exports.previewPresentismoMonthlyReport = async (req, res) => {
     const employees = await Employee.find({ _id: { $in: employeeIds } }).select('nombre apellido dni telefono').lean();
     const message = buildPresentismoReportMessage(startDate, employees);
 
+    // Incluir destinatarios activos (o fallback a env) para que el frontend pueda abrir WhatsApp
+    const PresentismoRecipient = require('../models/PresentismoRecipient');
+    const dbRecipientsDocs = await PresentismoRecipient.find({ active: true }).select('phone').lean();
+    const dbRecipients = dbRecipientsDocs.map((r) => (r.phone || '').trim()).filter(Boolean);
+    const envRecipients = (process.env.PRESENTISMO_WHATSAPP_TO || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const rawRecipients = dbRecipients.length > 0 ? dbRecipients : envRecipients;
+
     return res.json({
       msg: 'Previsualización del informe de presentismo',
       month: formatMonthYYYYMM(startDate),
       totalEmployees: employees.length,
       employees: employees.map((e) => ({ nombre: e.nombre, apellido: e.apellido })),
       message,
+      destinations: rawRecipients, // lista de números configurados
+      source: dbRecipients.length > 0 ? 'db' : 'env'
     });
   } catch (e) {
     console.error('[Admin] previewPresentismoMonthlyReport error:', e);
