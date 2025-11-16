@@ -156,10 +156,13 @@ exports.previewPresentismoMonthlyReport = async (req, res) => {
 
     // Incluir destinatarios activos (o fallback a env) para que el frontend pueda abrir WhatsApp
     const PresentismoRecipient = require('../models/PresentismoRecipient');
-    const dbRecipientsDocs = await PresentismoRecipient.find({ active: true }).select('phone').lean();
+    const dbRecipientsDocs = await PresentismoRecipient.find({ active: true }).select('name roleLabel phone').lean();
     const dbRecipients = dbRecipientsDocs.map((r) => (r.phone || '').trim()).filter(Boolean);
     const envRecipients = (process.env.PRESENTISMO_WHATSAPP_TO || '').split(',').map((s) => s.trim()).filter(Boolean);
     const rawRecipients = dbRecipients.length > 0 ? dbRecipients : envRecipients;
+    const recipients = dbRecipients.length > 0
+      ? dbRecipientsDocs.map(r => ({ phone: String(r.phone || '').trim(), name: r.name || null, roleLabel: r.roleLabel || null }))
+      : envRecipients.map(p => ({ phone: p, name: null, roleLabel: null }));
 
     return res.json({
       msg: 'Previsualización del informe de presentismo',
