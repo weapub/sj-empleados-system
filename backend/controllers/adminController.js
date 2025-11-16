@@ -187,6 +187,50 @@ exports.deletePresentismoRecipient = async (req, res) => {
   }
 };
 
+// Dev-only: promover usuario a admin por email, protegido por token y entorno no producción
+exports.promoteAdminByEmailDev = async (req, res) => {
+  try {
+    const isProd = String(process.env.NODE_ENV || '').toLowerCase() === 'production';
+    if (isProd) {
+      return res.status(403).json({ msg: 'Deshabilitado en producción' });
+    }
+    const token = req.headers['x-admin-promote-token'] || '';
+    const expected = process.env.ADMIN_PROMOTE_TOKEN || 'DEV_PROMOTE';
+    if (!token || token !== expected) {
+      return res.status(401).json({ msg: 'Token inválido' });
+    }
+    const email = String((req.body?.email || req.query?.email || '')).trim();
+    const passwordRaw = (req.body?.password || req.query?.password);
+    const password = passwordRaw ? String(passwordRaw) : null;
+    const name = String((req.body?.name || req.query?.name || '')).trim();
+    if (!email) {
+      return res.status(400).json({ msg: 'Email requerido' });
+    }
+    const User = require('../models/User');
+    let user = await User.findOne({ email });
+    if (!user) {
+      const nombre = name || 'Admin';
+      const rawPassword = password || process.env.ADMIN_SEED_PASSWORD || '123456';
+      const bcrypt = require('bcryptjs');
+      const salt = await bcrypt.genSalt(10);
+      const hashed = await bcrypt.hash(rawPassword, salt);
+      user = new User({ nombre, email, password: hashed, role: 'admin' });
+      await user.save();
+      return res.json({ msg: 'Usuario creado y promovido a admin', email, created: true, password: rawPassword });
+    }
+    user.role = 'admin';
+    if (password) {
+      const bcrypt = require('bcryptjs');
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+    await user.save();
+    return res.json({ msg: 'Usuario promovido a admin', email, created: false });
+  } catch (e) {
+    return res.status(500).json({ msg: 'Error interno', error: e.message });
+  }
+};
+
 // Obtener content-type via HEAD; si falla, intentar GET rápido sin cuerpo completo
 const getContentType = (url) => new Promise((resolve) => {
   try {

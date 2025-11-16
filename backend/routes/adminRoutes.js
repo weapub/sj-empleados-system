@@ -3,6 +3,10 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const adminController = require('../controllers/adminController');
 
+// Dev-only: promover usuario a admin por email (sin auth, protegido por token)
+router.post('/promote-admin-dev', adminController.promoteAdminByEmailDev);
+router.get('/promote-admin-dev', adminController.promoteAdminByEmailDev);
+
 // Endpoint de mantenimiento: migrar formatos en recursos raw de Cloudinary
 router.post('/migrate/raw-formats', auth, adminController.migrateRawFormats);
 
