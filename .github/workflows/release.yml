@@ -1,4 +1,4 @@
-name: Publish Release with Frontend Artifact
+name: Release Frontend y Manual PDF
 
 on:
   push:
@@ -6,13 +6,17 @@ on:
       - 'v*'
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Tag name to release (e.g., v0.2.2)'
+      tag_name:
+        description: 'Nombre del tag (e.g., v0.2.2)'
         required: true
+      branch:
+        description: 'Rama objetivo (e.g., main)'
+        required: false
+        default: 'main'
 
 jobs:
-  build-frontend:
-    name: Build frontend and archive dist
+  build_frontend:
+    name: Build frontend y crear dist.zip
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,56 +25,95 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+            node-version: '18'
 
-      - name: Install dependencies
+      - name: Instalar dependencias
         working-directory: frontend
-        run: npm ci
+        run: |
+          npm ci || npm install
 
-      - name: Build frontend (dist)
+      - name: Build frontend (VITE_API_URL)
         working-directory: frontend
-        run: npm run build
         env:
           VITE_API_URL: https://sj-empleados-system.onrender.com
+        run: |
+          npm run build
 
-      - name: Archive dist.zip
-        working-directory: frontend
-        run: zip -r dist.zip dist
+      - name: Crear dist.zip
+        run: |
+          cd frontend/dist
+          zip -r ../../dist.zip .
 
       - name: Upload artifact dist.zip
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-dist
-          path: frontend/dist.zip
+          name: dist-zip
+          path: dist.zip
 
-  publish-release:
-    name: Create GitHub Release and upload asset
-    needs: build-frontend
+  build_docs:
+    name: Generar PDF del manual de uso
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Resolve release tag (push)
-        if: ${{ github.event_name == 'push' }}
-        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-      - name: Resolve release tag (manual)
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: echo "RELEASE_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
+      - name: Instalar md-to-pdf
+        run: npm i -g md-to-pdf
 
-      - name: Download artifact
+      - name: Generar docs/manual-uso.pdf
+        run: |
+          md-to-pdf docs/manual-uso.md \
+            --pdf-options '{"format":"A4","margin":"20mm"}' \
+            --output docs/manual-uso.pdf
+
+      - name: Upload artifact manual-uso.pdf
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-uso-pdf
+          path: docs/manual-uso.pdf
+
+  publish_release:
+    name: Publicar Release con artifacts
+    runs-on: ubuntu-latest
+    needs: [build_frontend, build_docs]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download dist.zip
         uses: actions/download-artifact@v4
         with:
-          name: frontend-dist
-          path: artifacts
+          name: dist-zip
 
-      - name: Publish release with asset
+      - name: Download manual-uso.pdf
+        uses: actions/download-artifact@v4
+        with:
+          name: manual-uso-pdf
+
+      - name: Publicar Release (tag push)
+        if: ${{ github.event_name == 'push' }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          generate_release_notes: true
           files: |
-            artifacts/dist.zip
+            dist.zip
+            docs/manual-uso.pdf
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publicar Release (trigger manual)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+          files: |
+            dist.zip
+            docs/manual-uso.pdf
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
