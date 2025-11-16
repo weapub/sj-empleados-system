@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [previewData, setPreviewData] = useState(null);
   const [modalMonth, setModalMonth] = useState(''); // YYYY-MM dentro del modal
   const [refreshingPreview, setRefreshingPreview] = useState(false);
+  const [selectedRecipientPhone, setSelectedRecipientPhone] = useState('');
 
   const handleSendPresentismoReport = async () => {
     try {
@@ -48,6 +49,11 @@ const Dashboard = () => {
       const preview = await previewPresentismoWhatsAppReport(currentMonth);
       setPreviewData(preview);
       setModalMonth(currentMonth);
+      // Inicializar destinatario seleccionado
+      const firstPhone = Array.isArray(preview?.recipients) && preview.recipients.length > 0
+        ? (preview.recipients[0]?.phone || '')
+        : (Array.isArray(preview?.destinations) && preview.destinations.length > 0 ? preview.destinations[0] : '');
+      setSelectedRecipientPhone(firstPhone);
       setShowPreview(true);
     } catch (e) {
       Swal.fire({
@@ -65,6 +71,13 @@ const Dashboard = () => {
       setRefreshingPreview(true);
       const preview = await previewPresentismoWhatsAppReport(modalMonth || undefined);
       setPreviewData(preview);
+      // Mantener o actualizar destinatario si no había
+      if (!selectedRecipientPhone) {
+        const firstPhone = Array.isArray(preview?.recipients) && preview.recipients.length > 0
+          ? (preview.recipients[0]?.phone || '')
+          : (Array.isArray(preview?.destinations) && preview.destinations.length > 0 ? preview.destinations[0] : '');
+        setSelectedRecipientPhone(firstPhone);
+      }
     } catch (e) {
       Swal.fire({
         icon: 'error',
@@ -80,9 +93,7 @@ const Dashboard = () => {
     try {
       setSendingReport(true);
       const message = previewData?.message || '';
-      const destinationRaw = Array.isArray(previewData?.destinations) && previewData.destinations.length > 0
-        ? previewData.destinations[0]
-        : '';
+      const destinationRaw = selectedRecipientPhone || (Array.isArray(previewData?.destinations) && previewData.destinations.length > 0 ? previewData.destinations[0] : '');
       const phoneDigits = String(destinationRaw).replace(/\D/g, '');
       if (!phoneDigits) {
         Swal.fire({
@@ -277,11 +288,36 @@ const Dashboard = () => {
                         </Button>
                       </div>
                     </div>
-                    {Array.isArray(previewData.destinations) && previewData.destinations.length > 0 ? (
-                      <p className="mb-2">Destino: {previewData.destinations[0]}</p>
-                    ) : (
-                      <p className="text-danger mb-2">No hay destinatario configurado. Configure uno en Administración.</p>
-                    )}
+                    <div className="mb-3">
+                      <Form.Label className="mb-1">Destinatario</Form.Label>
+                      {Array.isArray(previewData.recipients) && previewData.recipients.length > 0 ? (
+                        <Form.Select
+                          value={selectedRecipientPhone}
+                          onChange={(e) => setSelectedRecipientPhone(e.target.value)}
+                          className="py-2 rounded-md shadow-sm"
+                          style={{ maxWidth: '320px' }}
+                        >
+                          {previewData.recipients.map((r, idx) => (
+                            <option key={idx} value={r.phone}>
+                              {(r.name || r.roleLabel) ? `${r.name || ''}${r.name && r.roleLabel ? ' – ' : ''}${r.roleLabel || ''}` : r.phone} {(!r.name && !r.roleLabel) ? '' : `– ${r.phone}`}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      ) : Array.isArray(previewData.destinations) && previewData.destinations.length > 0 ? (
+                        <Form.Select
+                          value={selectedRecipientPhone}
+                          onChange={(e) => setSelectedRecipientPhone(e.target.value)}
+                          className="py-2 rounded-md shadow-sm"
+                          style={{ maxWidth: '320px' }}
+                        >
+                          {previewData.destinations.map((p, idx) => (
+                            <option key={idx} value={p}>{p}</option>
+                          ))}
+                        </Form.Select>
+                      ) : (
+                        <p className="text-danger mb-2">No hay destinatario configurado. Configure uno en Administración.</p>
+                      )}
+                    </div>
                     <p className="mb-2">Empleados sin presentismo: {previewData.totalEmployees}</p>
                     {Array.isArray(previewData.employees) && previewData.employees.length > 0 ? (
                       <ul className="list-group mb-3">
