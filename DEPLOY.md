@@ -260,3 +260,20 @@ TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
 
 ---
 Cualquier ajuste adicional (S3, firma segura de uploads, validaciones extra) se puede incorporar si lo necesitas.
+## Release v0.2.2 (Presentismo y WhatsApp)
+- Modal de presentismo con selector de mes y botón “Actualizar previsualización”.
+- Inicio en mes actual (`YYYY-MM`) para la primera carga.
+- Selector de destinatario (BD o `PRESENTISMO_WHATSAPP_TO`).
+- Envío abre `wa.me` con texto y número seleccionado.
+- Fix en backend: se añade `recipients` en la previsualización para evitar errores en producción.
+- Vite fijo en puerto `5178` con `strictPort`.
+
+### Validaciones tras deploy
+- Dashboard → “Previsualizar envío por WhatsApp”: verificar mes por defecto y destinatarios listados.
+- Cambiar mes y usar “Actualizar previsualización”; confirmar que el mensaje se refresca.
+- “Enviar por WhatsApp” debe abrir pestaña con `wa.me` y el texto.
+
+### Publicación del Release
+- Crear/editar Release en GitHub: `https://github.com/weapub/sj-empleados25/releases/new` con tag `v0.2.2`.
+- Título sugerido: `SJ-Empleados v0.2.2`.
+- Incluir resumen de cambios anteriores y publicar.

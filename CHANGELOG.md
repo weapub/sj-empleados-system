@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.2.2 – SJ-Empleados
+
+### Features
+- Presentismo: el selector de mes se mueve al modal de previsualización, con botón “Actualizar previsualización”.
+- El modal inicia siempre con el mes actual (`YYYY-MM`) y usa ese mes para previsualizar y enviar.
+- Envío por WhatsApp desde el modal: se abre `wa.me` con el mensaje generado y el número configurado.
+- Selector de destinatario en el modal: lista números activos desde BD con nombre/rol cuando están disponibles; fallback a `PRESENTISMO_WHATSAPP_TO`.
+
+### Fixes
+- Previsualización en producción (Vercel): se corrige `ReferenceError` incluyendo el arreglo `recipients` en la respuesta del backend.
+
+### Updates
+- Vite: `server.port=5178` y `strictPort=true` para ejecutar siempre en el puerto 5178.
+
+### Post-release
+- Configurar destinatarios en “Administración → Destinatarios de Presentismo” o mediante `PRESENTISMO_WHATSAPP_TO`.
+- Validar en Dashboard que “Previsualizar envío por WhatsApp” muestra el selector de mes y destinatario, y que “Enviar por WhatsApp” abre el número elegido con el texto correcto.
+
 ## v0.2.1 – SJ-Empleados
 
 ### Features
