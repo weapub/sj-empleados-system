@@ -4,9 +4,22 @@ const Disciplinary = require('../models/Disciplinary');
 const Employee = require('../models/Employee');
 const { sendWhatsApp } = require('../utils/whatsapp');
 const EmployeeEvent = require('../models/EmployeeEvent');
+// Utilidad simple para formatear el mes en español
+function formatMonthLongYear(date) {
+  try {
+    return date.toLocaleString('es-AR', { month: 'long', year: 'numeric' });
+  } catch (_) {
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    return `${m}/${y}`;
+  }
+}
 
 // Configuración por entorno
 const REMINDERS_CRON = process.env.REMINDERS_CRON || '0 8 * * *';
+const PRESENTISMO_REPORT_ENABLED = String(process.env.PRESENTISMO_REPORT_ENABLED || 'true').toLowerCase() !== 'false';
+// 09:00 del día 20 de cada mes por defecto
+const PRESENTISMO_REPORT_CRON = process.env.PRESENTISMO_REPORT_CRON || '0 9 20 * *';
 const REMINDERS_ONLY_ACTIVE = String(process.env.REMINDERS_ONLY_ACTIVE || 'true').toLowerCase() !== 'false';
 const REMINDERS_DEPARTAMENTO = (process.env.REMINDERS_DEPARTAMENTO || '')
   .split(',')
@@ -123,6 +136,47 @@ function start() {
     console.log('[CRON] Ejecutando recordatorios automáticos');
     await runDailyReminders();
   });
+  // Informe mensual de presentismo por inasistencias
+  if (PRESENTISMO_REPORT_ENABLED) {
+    cron.schedule(PRESENTISMO_REPORT_CRON, async () => {
+      try {
+        console.log('[CRON] Enviando informe mensual de presentismo (inasistencias)');
+        const Attendance = require('../models/Attendance');
+        const Employee = require('../models/Employee');
+        const rawRecipients = (process.env.PRESENTISMO_WHATSAPP_TO || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (rawRecipients.length === 0) {
+          console.warn('[CRON] PRESENTISMO_WHATSAPP_TO no configurado; se omite envío');
+          return;
+        }
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const employeeIds = await Attendance.distinct('employee', {
+          type: 'inasistencia',
+          lostPresentismo: true,
+          date: { $gte: startDate, $lt: endDate },
+        });
+        const employees = await Employee.find({ _id: { $in: employeeIds } }).select('nombre apellido dni telefono');
+        const headerLabel = formatMonthLongYear(startDate);
+        const header = `Informe de Presentismo – ${headerLabel}`;
+        const sub = `Empleados que perdieron el presentismo por inasistencias:`;
+        const lines = employees.length
+          ? employees.map((e, idx) => `${idx + 1}. ${e.apellido} ${e.nombre} – DNI ${e.dni ?? '-'} – Tel ${e.telefono ?? '-'}`)
+          : ['No se registran pérdidas de presentismo por inasistencia en el período.'];
+        const message = `${header}\n${sub}\n\n${lines.join('\n')}`;
+        for (const to of rawRecipients) {
+          await sendWhatsApp(to, message);
+        }
+      } catch (e) {
+        console.error('[CRON] Error enviando informe de presentismo:', e.message);
+      }
+    });
+  } else {
+    console.log('[CRON] Envío automático de informe de presentismo deshabilitado');
+  }
   console.log(
     '[CRON] Scheduler de recordatorios iniciado',
     JSON.stringify({
@@ -130,6 +184,8 @@ function start() {
       onlyActive: REMINDERS_ONLY_ACTIVE,
       departamento: REMINDERS_DEPARTAMENTO,
       sucursal: REMINDERS_SUCURSAL,
+      presentismoReportEnabled: PRESENTISMO_REPORT_ENABLED,
+      presentismoReportCron: PRESENTISMO_REPORT_CRON,
     })
   );
 }

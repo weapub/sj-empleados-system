@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { getDashboardMetrics } from '../../services/api';
+import { getDashboardMetrics, sendPresentismoWhatsAppReport } from '../../services/api';
 import { LayoutDashboard, Users, UserCheck, CalendarX, Clock, UserX, AlertTriangle, AlertCircle, Receipt, TrendingUp } from 'lucide-react';
 import MetricCardAlt from '../common/MetricCardAlt';
 import { isCanceledError } from '../../utils/http';
+import Swal from 'sweetalert2';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -30,6 +31,28 @@ const Dashboard = () => {
     recibosPendientes: null,
     totalHistorico: null
   });
+
+  const [sendingReport, setSendingReport] = useState(false);
+
+  const handleSendPresentismoReport = async () => {
+    try {
+      setSendingReport(true);
+      const res = await sendPresentismoWhatsAppReport();
+      Swal.fire({
+        icon: 'success',
+        title: 'Informe enviado',
+        text: `Mes ${res.month}. Empleados: ${res.totalEmployees}. Destinos: ${res.destinations}.`,
+      });
+    } catch (e) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al enviar informe',
+        text: e?.response?.data?.msg || e.message || 'Error desconocido',
+      });
+    } finally {
+      setSendingReport(false);
+    }
+  };
 
   useEffect(() => {
     // Evitar solicitudes cuando no hay token (estado no autenticado)
@@ -153,6 +176,11 @@ const Dashboard = () => {
             <Col lg={3} md={6} className="mb-3">
               <Button as={Link} to="/payroll/new" variant="info" className="w-100 py-3 rounded-md shadow-sm bg-gradient-to-br from-cyan-600 to-cyan-700 text-white border-0">
                 <Receipt size={20} /> <span>Nuevo Recibo</span>
+              </Button>
+            </Col>
+            <Col lg={3} md={6} className="mb-3">
+              <Button variant="secondary" className="w-100 py-2 rounded-md shadow-sm" disabled={sendingReport} onClick={handleSendPresentismoReport}>
+                <Users size={20} /> <span>{sendingReport ? 'Enviando...' : 'Enviar informe Presentismo (WhatsApp)'}</span>
               </Button>
             </Col>
           </Row>

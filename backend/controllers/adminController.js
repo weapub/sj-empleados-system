@@ -6,6 +6,113 @@ const { cloudinary, extractPublicIdFromUrl } = require('../utils/cloudinary');
 const https = require('https');
 const http = require('http');
 const { sendWhatsApp } = require('../utils/whatsapp');
+// Utilidad simple para formatear el mes en español
+function formatMonthLongYear(date) {
+  try {
+    return date.toLocaleString('es-AR', { month: 'long', year: 'numeric' });
+  } catch (_) {
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    return `${m}/${y}`;
+  }
+}
+function formatMonthYYYYMM(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
+
+// Informe mensual de presentismo: empleados que perdieron por inasistencia
+function buildPresentismoReportMessage(monthDate, employees) {
+  const label = formatMonthLongYear(monthDate);
+  const header = `Informe de Presentismo – ${label}`;
+  const sub = `Empleados que perdieron el presentismo por inasistencias:`;
+  if (!employees || employees.length === 0) {
+    return `${header}\n${sub}\n\nNo se registran pérdidas de presentismo por inasistencia en el período.`;
+  }
+  const lines = employees.map((e, idx) => {
+    const dni = e.dni ? String(e.dni) : '-';
+    const tel = e.telefono ? String(e.telefono) : '-';
+    return `${idx + 1}. ${e.apellido} ${e.nombre} – DNI ${dni} – Tel ${tel}`;
+  });
+  return `${header}\n${sub}\n\n${lines.join('\n')}`;
+}
+
+// POST /api/admin/presentismo/report/send
+// Opcional: body { month: 'YYYY-MM' } para enviar un mes específico
+exports.sendPresentismoMonthlyReport = async (req, res) => {
+  try {
+    // Solo admin
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ msg: 'Acceso denegado. Solo admin.' });
+    }
+
+    // Determinar mes objetivo
+    const rawMonth = (req.body?.month || req.query?.month || '').trim();
+    let startDate;
+    if (rawMonth && /^\d{4}-\d{2}$/.test(rawMonth)) {
+      const [y, m] = rawMonth.split('-').map((v) => Number(v));
+      startDate = new Date(y, m - 1, 1);
+    } else {
+      const now = new Date();
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+
+    // Buscar empleados con inasistencias que pierdan presentismo en el mes
+    const Attendance = require('../models/Attendance');
+    const Employee = require('../models/Employee');
+    const employeeIds = await Attendance.distinct('employee', {
+      type: 'inasistencia',
+      lostPresentismo: true,
+      date: { $gte: startDate, $lt: endDate }
+    });
+
+    const employees = await Employee.find({ _id: { $in: employeeIds } }).select('nombre apellido dni telefono');
+    const message = buildPresentismoReportMessage(startDate, employees);
+
+    // Destinatarios (admins) desde env
+    const rawRecipients = (process.env.PRESENTISMO_WHATSAPP_TO || '').split(',').map((s) => s.trim()).filter(Boolean);
+    if (rawRecipients.length === 0) {
+      return res.status(400).json({
+        msg: 'Configurar PRESENTISMO_WHATSAPP_TO con números destino separados por coma',
+        hint: 'Ej: PRESENTISMO_WHATSAPP_TO="+54911xxxxxxx,+549351xxxxxxx"'
+      });
+    }
+
+    const results = [];
+    let sent = 0;
+    let errors = 0;
+    for (const to of rawRecipients) {
+      try {
+        const r = await sendWhatsApp(to, message);
+        if (r?.sid || r?.mock) {
+          sent += 1;
+          results.push({ to, ...(r.sid ? { sid: r.sid } : { mock: true }) });
+        } else {
+          errors += 1;
+          results.push({ to, error: r?.error || 'unknown_error' });
+        }
+      } catch (e) {
+        errors += 1;
+        results.push({ to, error: e.message });
+      }
+    }
+
+    return res.json({
+      msg: 'Informe de presentismo enviado',
+      month: formatMonthYYYYMM(startDate),
+      totalEmployees: employees.length,
+      destinations: rawRecipients.length,
+      sent,
+      errors,
+      results,
+    });
+  } catch (e) {
+    console.error('[Admin] sendPresentismoMonthlyReport error:', e);
+    return res.status(500).json({ msg: 'Error interno', error: e.message });
+  }
+};
 
 // Obtener content-type via HEAD; si falla, intentar GET rápido sin cuerpo completo
 const getContentType = (url) => new Promise((resolve) => {

@@ -12,4 +12,7 @@ router.post('/twilio/test-whatsapp', auth, adminController.testTwilioWhatsApp);
 // Endpoint de prueba Twilio WhatsApp masivo (solo admin)
 router.post('/twilio/test-whatsapp-all', auth, adminController.broadcastTwilioWhatsApp);
 
+// Enviar informe mensual de presentismo por WhatsApp (solo admin)
+router.post('/presentismo/report/send', auth, adminController.sendPresentismoMonthlyReport);
+
 module.exports = router;

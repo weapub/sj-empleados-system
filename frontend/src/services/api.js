@@ -278,3 +278,11 @@ export const addAccountPayment = async (payload) => {
   const response = await axios.post(`${API_URL}/account/payment`, payload);
   return response.data;
 };
+
+// Admin: enviar informe mensual de presentismo por WhatsApp
+export const sendPresentismoWhatsAppReport = async (month) => {
+  setAuthToken(localStorage.getItem('token'));
+  const payload = month ? { month } : {};
+  const response = await axios.post(`${API_URL}/admin/presentismo/report/send`, payload);
+  return response.data; // { msg, month, totalEmployees, destinations, sent, errors, results }
+};
