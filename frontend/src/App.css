@@ -421,10 +421,9 @@ a:hover { color: var(--primary-color); }
 .theme-dsign .navbar { backdrop-filter: none; box-shadow: 0 3px 10px rgba(79, 70, 229, 0.09); }
 
 /* Colorizar ícono de calendario en inputs de fecha/mes (WebKit/Chromium) */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="month"]::-webkit-calendar-picker-indicator {
+input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 1;
-  /* Aproximación al gris #a3a3a3 */
+  /* Aproximación al gris neutro para mejor contraste */
   filter: invert(64%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(94%) contrast(88%);
   /* Ajuste visual de tamaño y separación */
   width: 18px;
@@ -432,12 +431,42 @@ input[type="month"]::-webkit-calendar-picker-indicator {
   margin-right: 2px;
   cursor: pointer;
 }
+input[type="month"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  /* Aproximación al gris neutro */
+  filter: invert(64%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(94%) contrast(88%);
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  cursor: pointer;
+}
 
 /* Específico para Bootstrap .form-control del campo periodo */
+.form-control[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  /* Aproximación al gris neutro para mejor contraste */
+  filter: invert(64%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(94%) contrast(88%);
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  cursor: pointer;
+}
 .form-control[type="month"]::-webkit-calendar-picker-indicator,
 .form-control[name="period"]::-webkit-calendar-picker-indicator {
   opacity: 1;
-  filter: invert(66%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(92%) contrast(90%);
+  /* Aproximación al gris neutro */
+  filter: invert(64%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(94%) contrast(88%);
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+/* Asegurar el gris también para inputs con name="period" fuera de .form-control */
+input[name="period"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  /* Aproximación al gris neutro */
+  filter: invert(64%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(94%) contrast(88%);
   width: 18px;
   height: 18px;
   margin-right: 2px;
@@ -866,6 +895,7 @@ input[type="month"] {
   transition: all 0.2s ease;
   /* background: #000000; */
   color: var(--text-primary);
+  color-scheme: auto;
 }
 
 .form-control::placeholder,
