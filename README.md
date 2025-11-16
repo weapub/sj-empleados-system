@@ -3,7 +3,7 @@
 Proyecto monorepo con `frontend/` (React + Bootstrap) y `backend/` (Node/Express + MongoDB).
 
 ## URL de Producción
-- Frontend: `https://sj-empleados-system.vercel.app/`
+- Frontend: `https://sj-empleados.vercel.app/`
 
 ## Subir a GitHub (repo: `weapub/sj-empleados25`)
 
@@ -49,7 +49,7 @@ Checklist de producción (Vercel):
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Variables: `VITE_API_URL` → backend público
-- Dominio de producción: `https://sj-empleados-system.vercel.app/` (si aplica)
+- Dominio de producción: `https://sj-empleados.vercel.app/` (si aplica)
 
 ### Backend (Render o Railway)
 - Crea un servicio web desde el repo.

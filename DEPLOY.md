@@ -27,7 +27,7 @@ Este documento complementa el README con pasos prácticos para producción.
 - Root Directory: `frontend`
 - Build: `npm install && npm run build`
 - Output: `dist/`
-- Dominio de producción: `https://sj-empleados-system.vercel.app/`
+- Dominio de producción: `https://sj-empleados.vercel.app/`
  - Env vars:
    - Gestionadas automáticamente en `vercel.json` (build.env): `VITE_API_URL=https://sj-empleados-system.onrender.com`.
    - Alternativa: definir en Project Settings → Environment Variables (Production/Preview) si prefieres gestionar desde Vercel.
